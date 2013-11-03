@@ -52,16 +52,4 @@ public class HashAlgorithm {
 		}
 		return result;
 	}
-	
-	public static void main(String[] args) {
-		String test = "this is a hash test.";
-		String test2 = "this is a hash test too.";
-		
-		byte[] hash1 = calculateHash(test.getBytes());
-		byte[] hash2 = calculateHash(test2.getBytes());
-		
-		System.out.println(new String(hash1));
-		System.out.println(new String(hash2));
-		System.out.println(String.format("A %s B %sA",new Object[]{"a","b"}));
-	}
 }
