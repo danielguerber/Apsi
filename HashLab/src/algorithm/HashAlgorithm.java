@@ -46,5 +46,6 @@ public class HashAlgorithm {
 		
 		System.out.println(new String(hash1));
 		System.out.println(new String(hash2));
+		System.out.println(String.format("A %s B %sA",new Object[]{"a","b"}));
 	}
 }

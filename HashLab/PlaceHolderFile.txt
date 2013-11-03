@@ -1,0 +1,8 @@
+%sLiebe Alice
+
+Ich bedanke mich %s für %s %s %s.
+Ich möchte %s %sdarauf aufmerksam machen, dass %s etwas %s in den %s %s: SunShienForever! Du kannst Dir %s%s was %s steckt. Du wirst die %s sein, eine %s %s %s %s zu %s.
+Ich bitte Dich %s von 100.000.- %s auf das Konto %sNummer: 202-1201.262.10. %s Bank ABC AG, %s Basel %szu überweisen.
+Ich %s Dir %s zu haben und %s mit %s Grüssen.
+
+%s Bob, %s
