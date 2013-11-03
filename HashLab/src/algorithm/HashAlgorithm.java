@@ -7,10 +7,21 @@ import org.bouncycastle.crypto.engines.DESEngine;
 import org.bouncycastle.crypto.params.DESParameters;
 
 
-
+/**
+ * @author Stefan Eggenschwiler & Daniel Guerber
+ * Implementation of the specified hash algorithm
+ */
 public class HashAlgorithm {
+	/**
+	 * Specified initial vector
+	 */
 	private final static byte[] IV = {0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55};
 	
+	/**
+	 * Returns a new byte array with 0b1.... padding and 64 bit message length
+	 * @param message message to hash
+	 * @return padded message
+	 */
 	private static byte[] addPaddingAndLength(byte[] message) {
 		int paddingLength = 8 - (message.length % 8);
 		
@@ -27,6 +38,11 @@ public class HashAlgorithm {
 		return newMessage;
 	}
 	
+	/**
+	 * Calculates the hash with the specified algorithm
+	 * @param message Message to hash
+	 * @return hash
+	 */
 	public static byte[] calculateHash(byte[] message) {
 		DESEngine engine = new DESEngine();
 		
@@ -34,6 +50,7 @@ public class HashAlgorithm {
 		
 		byte[] prevHash = IV;
 		
+		//calculate H
 		for (int i = 0; i < newMessage.length; i+=8) {
 			byte[] m = Arrays.copyOfRange(newMessage, i, i+8);
 			
@@ -46,6 +63,7 @@ public class HashAlgorithm {
 			}
 		}
 		
+		//take both halves and apply xor
 		byte[] result = new byte[4];
 		for (int i = 0; i < result.length; i++) {
 			result[i] = (byte)(prevHash[i] ^ prevHash[7-i]);

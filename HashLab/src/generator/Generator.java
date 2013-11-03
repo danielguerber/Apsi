@@ -17,17 +17,28 @@ import java.util.Map.Entry;
 
 import algorithm.HashAlgorithm;
 
+/**
+ * @author Stefan Eggenschwiler & Daniel Guerber
+ * Generates new files from the templates & replacement files
+ * and calculates hashes looking for colliions.
+ */
 public final class Generator {
 	
-	private final int maxCollisions;
+	private final int minCollisions;
 	private final String fileOriginal;
 	private final String templateOriginal;
 	private final String templateCopy;
 	private final String[][] replacements;
 	private final boolean changeOriginal;
 	
-	public Generator(int maxCollisions, boolean changeOriginal) throws IOException {
-		this.maxCollisions = maxCollisions;
+	/**
+	 * Reads in the files and starts the calculation
+	 * @param minCollisions Number of minimal collisions to find
+	 * @param changeOriginal Specifies if original file should be generated
+	 * @throws IOException Is thrown in case of problems with file handling
+	 */
+	public Generator(int minCollisions, boolean changeOriginal) throws IOException {
+		this.minCollisions = minCollisions;
 		this.changeOriginal = changeOriginal;
 		
 		this.fileOriginal = readFile("OriginalFile.txt");
@@ -39,6 +50,10 @@ public final class Generator {
 		searchCollisions();
 	}
 	
+	/**
+	 * Searches for collisions by randomly generating new texts and calculating the hashes.
+	 * @throws FileNotFoundException Is thrown in case of problems with file handling
+	 */
 	private void searchCollisions() throws FileNotFoundException {
 		HashMap<Integer, String> originalHashes = new HashMap<Integer, String>();
 		HashMap<Integer, String> copyHashes = new HashMap<Integer, String>();
@@ -46,14 +61,18 @@ public final class Generator {
 		int foundCollisions = 0;
 		HashSet<Integer> collidedHashes = new HashSet<Integer>();
 		
+		//Calculate hash for original file
 		ByteBuffer buffer = ByteBuffer.wrap(HashAlgorithm.calculateHash(fileOriginal.getBytes()));
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         int origHash = buffer.getInt();
 		
 		originalHashes.put(origHash, fileOriginal);
 		
-		while (foundCollisions < maxCollisions) {
+		//Search collisions
+		while (foundCollisions < minCollisions) {
+			//generate multiple copies to speed up
 			for (int i = 0; i < 2048; i++) {
+				//Generate random copy and calculate hash
 				String randomCopy = String.format(templateCopy, getRandomReplacement());
 				buffer = ByteBuffer.wrap(HashAlgorithm.calculateHash(randomCopy.getBytes()));
 		        buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -61,6 +80,7 @@ public final class Generator {
 
 		        copyHashes.put(copyHash, randomCopy);
 		        
+		        //if enabled generate random original
 		        if (changeOriginal)
 		        {
 		        	String randomOriginal = String.format(templateOriginal, getRandomReplacement());
@@ -72,9 +92,11 @@ public final class Generator {
 		        }
 			}
 			
+			//search for collisions and write them in a file
 			for (Entry<Integer,String> hashEntry : originalHashes.entrySet()) {
 				if (!collidedHashes.contains(hashEntry.getKey()) && copyHashes.containsKey(hashEntry.getKey())) {
 					foundCollisions++;
+					//make shure not to count collision twice
 					collidedHashes.add(hashEntry.getKey());
 					PrintWriter out = new PrintWriter("original" + foundCollisions + ".txt");
 					out.print(hashEntry.getValue());
@@ -93,6 +115,10 @@ public final class Generator {
 		}
 	}
 	
+	/**
+	 * Gets an Object array of strings to replace placeholder.
+	 * @return Object array containing the replacement
+	 */
 	private Object[] getRandomReplacement() {
 		Object[] random = new Object[replacements.length];
 		for (int i = 0; i < replacements.length; i++) {
@@ -101,6 +127,12 @@ public final class Generator {
 		return random;
 	}
 	
+	/**
+	 * Reads a file into a string
+	 * @param path Path of the file
+	 * @return Full text of the file
+	 * @throws IOException 
+	 */
 	private static String readFile(String path) throws IOException {
 		File file = new File(path);
 		FileInputStream fis = new FileInputStream(file);
@@ -112,7 +144,11 @@ public final class Generator {
 	}
 	
 	
-	
+	/**
+	 * reads the replacement file into an two dimensional string array
+	 * @return array of replacements
+	 * @throws IOException
+	 */
 	private static String[][] readReplacements() throws IOException {
 		List<String[]> repList = new ArrayList<String[]>();
 		
@@ -128,6 +164,10 @@ public final class Generator {
 		return repList.toArray(new String[repList.size()][]);
 	}
 	
+	/**
+	 * Executes the generator
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		try {
 			new Generator(2,true);
