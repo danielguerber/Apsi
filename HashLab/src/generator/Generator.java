@@ -170,7 +170,7 @@ public final class Generator {
 	 */
 	public static void main(String[] args) {
 		try {
-			new Generator(2,true);
+			new Generator(1,true);
 		} catch (IOException e) {
 			System.out.println("Error accessing Files: " + e.getMessage());
 		}

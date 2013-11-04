@@ -1,6 +1,7 @@
 package algorithm;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import org.bouncycastle.crypto.engines.DESEngine;
@@ -63,11 +64,12 @@ public class HashAlgorithm {
 			}
 		}
 		
-		//take both halves and apply xor
-		byte[] result = new byte[4];
-		for (int i = 0; i < result.length; i++) {
-			result[i] = (byte)(prevHash[i] ^ prevHash[7-i]);
-		}
-		return result;
+		ByteBuffer buffer = ByteBuffer.wrap(prevHash);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        long iPrevHash = buffer.getLong();
+        
+        int iResult = ((int)iPrevHash) ^ ((int)Long.reverse(iPrevHash));
+		
+		return ByteBuffer.allocate(4).putInt(iResult).array();
 	}
 }
