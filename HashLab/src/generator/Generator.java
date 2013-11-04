@@ -20,7 +20,7 @@ import algorithm.HashAlgorithm;
 /**
  * @author Stefan Eggenschwiler & Daniel Guerber
  * Generates new files from the templates & replacement files
- * and calculates hashes looking for colliions.
+ * and calculates hashes looking for collisions.
  */
 public final class Generator {
 	
