@@ -1,0 +1,85 @@
+\documentclass[12pt]{scrartcl}
+ \usepackage{fancyhdr, graphicx}
+ \usepackage[utf8]{inputenc} 
+ \usepackage[german]{babel}
+ \usepackage[scaled=0.92]{helvet}
+ \usepackage{enumitem}
+ \usepackage{parskip}
+ \usepackage{lastpage} % for getting last page number
+ \renewcommand{\familydefault}{\sfdefault}
+ 
+ \fancypagestyle{firststyle}{ %Style of the first page
+ \fancyhf{}
+ \fancyheadoffset[L]{0.6cm}
+ \lhead{
+ \includegraphics[scale=0.8]{./fhnw_ht_e_10mm.jpg}}
+ \renewcommand{\headrulewidth}{0pt}
+ \lfoot{APSI Lab 1}
+ \rfoot{Daniel Gürber, Stefan Eggenschwiler}
+}
+
+\fancypagestyle{documentstyle}{ %Style of the rest of the document
+ \fancyhf{}
+ \fancyheadoffset[L]{0.6cm}
+\lhead{
+ \includegraphics[scale=0.8]{./fhnw_ht_e_10mm.jpg}}
+ \renewcommand{\headrulewidth}{0pt}
+ \lfoot{\thepage\ / \pageref{LastPage} }
+}
+
+\pagestyle{firststyle} %different look of first page
+ 
+\title{ %Titel
+Application Security
+\\Lab 1
+\vspace{0.2cm}
+}
+
+ \begin{document}
+ \maketitle
+ \thispagestyle{firststyle}
+ \pagestyle{firststyle}
+ \begin{abstract}
+ \begin{center}
+ \end{center}
+ \vspace{0.5cm}
+\hrulefill
+\end{abstract}
+
+ \pagestyle{documentstyle}
+ \tableofcontents
+ \pagebreak
+\section{Aufgabenstellung}
+Konstruieren Sie zwei Briefe an Alice, einen (original) für Bob und einen (gefälscht) für Alice, die aber den gleichen Hashwert haben. Da die Fälschung etwas für Sie einbringen soll, ersetzen Sie im Brief an Alice die Kontonummer 222-1101.461.12 durch Ihre eigene: 202-1201.262.10. Sie haben freilich bei der gleichen Bank ein Konto mit dieser Nummer eröffnet.
+
+Ihre Aufgabe besteht darin, sogenannte Kollisionen im Hash-Verfahren zu suchen, d.h. Änderungen
+im Originaltext, die den gleichen Hashwert liefern: $ h(m_{orig}) = h(m_{fake})$.
+
+\section{Softwareaufbau}
+Zur Lösung der Aufgabe wurden die Klassen "{}HashAlgorithm"{} und "{}Generator"{} implementiert.
+
+Die Klasse "{}HashAlgorithm"{} dient ausschliesslich zur Berechnung der Hash-Werte. In der Klasse "{}Generator"{} werden die Briefe eingelesen, generiert und bei einer Kollision in einem Text-File ausgegeben.
+
+\subsection{Hashfunktion}
+Die Hashfunktion wurde gemäss Aufgabenstellung implementiert.
+
+Um den Output mit der Länge von 128 Bit zu verkürzen, wird er in zwei 64 Bit Blöcke geteilt und durch die Verwendung von XOR zu einem 64 Bit Block "verschmolzen".
+
+\subsection{Generator}
+\subsubsection{Variationserzeugung}
+Aus der Aufgabenstellung ist ersichtlich, dass es jeweils $2^{32}$ verschiedene Möglichkeiten pro Originalmail gibt.
+
+
+Lauf der Aufgabenstellung haben wir $2^{32}$ verschiedene Kombinationsmöglichkeiten pro Mail. Diese Kombinationen haben wir in einem Integer codiert, dabei repräsentiert ein Bit einen Platzhalter.   Zum Beispiel: Das zweite Bit steht auf 0, dann wird das Wort "vom Herzen" eingesetzt. So können wir jede Variation eindeutig bestimmen.
+
+\subsection{Search Collisions}
+\subsubsection{Strategien}
+Zur Generierung der Mails verwenden wir keinen linearen Ansatz, sondern einem Randomisierten. Dadurch wird die Performance erhöht und Memory Footprints werden verringert. Letzteres wird interessant, weil vor Start der Anwendung angegeben werden kann, nach wievielen Kollisionen man suchen möchte.
+
+Erst werden $2^{11}$ (2048) Varianten der Original- und der Fake-Email generiert, anschliessend werden diese 2048 Varianten auf Kollisionen verglichen, bevor weitere generiert werden.
+
+Zusätzlich zur gemeinsamen Generierung von Original- und Fake-Emails bietet unsere Implementation die Möglichkeit, der Definition des Geburtstagsparadoxons enstsprechend, nur Fake-Emails zu generieren und diese mit dem Original des Aufgabenblattes zu vergleichen. Allerdings haben wir auf diese Art auch nach längerer Suche keine Kollisionen finden können.
+
+\subsubsection{Datenstrukturen}
+Unsere Lösung verwendet zwei Hashmaps (Integer, String). Eine für alle Variationen der Original-Mail und eine für die falschen Mails. Für den Key benutzen wir jeweils den Hashwert und als Value wird der Variations-Integer dieser Mail gesetzt.
+ \end{document}
