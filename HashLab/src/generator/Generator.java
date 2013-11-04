@@ -96,7 +96,7 @@ public final class Generator {
 			for (Entry<Integer,String> hashEntry : originalHashes.entrySet()) {
 				if (!collidedHashes.contains(hashEntry.getKey()) && copyHashes.containsKey(hashEntry.getKey())) {
 					foundCollisions++;
-					//make shure not to count collision twice
+					//make sure not to count collision twice
 					collidedHashes.add(hashEntry.getKey());
 					PrintWriter out = new PrintWriter("original" + foundCollisions + ".txt");
 					out.print(hashEntry.getValue());
@@ -145,7 +145,7 @@ public final class Generator {
 	
 	
 	/**
-	 * reads the replacement file into an two dimensional string array
+	 * Reads the replacement file into an two dimensional string array
 	 * @return array of replacements
 	 * @throws IOException
 	 */
@@ -170,7 +170,7 @@ public final class Generator {
 	 */
 	public static void main(String[] args) {
 		try {
-			new Generator(1,true);
+			new Generator(1, true);
 		} catch (IOException e) {
 			System.out.println("Error accessing Files: " + e.getMessage());
 		}
