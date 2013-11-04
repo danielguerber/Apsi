@@ -26,13 +26,18 @@ public class HashAlgorithm {
 	private static byte[] addPaddingAndLength(byte[] message) {
 		int paddingLength = 8 - (message.length % 8);
 		
-		byte[] newMessage = new byte[message.length + paddingLength + 8];
+		byte[] newMessage;
+		
+		if (message.length % 8 > 0) {
+			newMessage = new byte[message.length + paddingLength + 8];
+			newMessage[message.length] = -128;
+		} else {
+			newMessage = new byte[message.length + 8];
+		}
 		
 		System.arraycopy(message, 0, newMessage, 0, message.length);
 		
-		if (message.length % 8 > 0) {
-			newMessage[message.length] = -128;
-		}
+		
 		
 		System.arraycopy(ByteBuffer.allocate(8).putLong(message.length).array(), 0, newMessage, newMessage.length - 8, 8);
 	

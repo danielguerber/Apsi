@@ -63,14 +63,14 @@ Die Klasse "{}HashAlgorithm"{} dient ausschliesslich zur Berechnung der Hash-Wer
 \subsection{Hashfunktion}
 Die Hashfunktion wurde gemäss Aufgabenstellung implementiert.
 
-Um den Output mit der Länge von 128 Bit zu verkürzen, wird er in zwei 64 Bit Blöcke geteilt und durch die Verwendung von XOR zu einem 64 Bit Block "verschmolzen".
+Um den Output mit der Länge von 64 Bit zu verkürzen, wird er in zwei 32 Bit Blöcke geteilt und durch die Verwendung von XOR zu einem 32 Bit Block "verschmolzen".
 
 \subsection{Generator}
 \subsubsection{Variationserzeugung}
 Aus der Aufgabenstellung ist ersichtlich, dass es jeweils $2^{32}$ verschiedene Möglichkeiten pro Originalmail gibt.
 
 
-Lauf der Aufgabenstellung haben wir $2^{32}$ verschiedene Kombinationsmöglichkeiten pro Mail. Diese Kombinationen haben wir in einem Integer codiert, dabei repräsentiert ein Bit einen Platzhalter.   Zum Beispiel: Das zweite Bit steht auf 0, dann wird das Wort "vom Herzen" eingesetzt. So können wir jede Variation eindeutig bestimmen.
+Lauf der Aufgabenstellung haben wir $2^{32}$ verschiedene Kombinationsmöglichkeiten pro Mail. In unserem Projekt wird jeweils für jeden Platzhalter durch eine Zufallszahl eine der Möglichkeiten ausgewählt und dann ersetzt. Durch einfaches hinzufügen neuer Möglichkeiten im Replacements.txt file können so neue Kombinationen hinzugefügt werden.
 
 \subsection{Search Collisions}
 \subsubsection{Strategien}
@@ -78,7 +78,7 @@ Zur Generierung der Mails verwenden wir keinen linearen Ansatz, sondern einem Ra
 
 Erst werden $2^{11}$ (2048) Varianten der Original- und der Fake-Email generiert, anschliessend werden diese 2048 Varianten auf Kollisionen verglichen, bevor weitere generiert werden.
 
-Zusätzlich zur gemeinsamen Generierung von Original- und Fake-Emails bietet unsere Implementation die Möglichkeit, der Definition des Geburtstagsparadoxons enstsprechend, nur Fake-Emails zu generieren und diese mit dem Original des Aufgabenblattes zu vergleichen. Allerdings haben wir auf diese Art auch nach längerer Suche keine Kollisionen finden können.
+Zusätzlich zur gemeinsamen Generierung von Original- und Fake-Emails bietet unsere Implementation die Möglichkeit, der Definition des Geburtstagsparadoxons entsprechend, nur Fake-Emails zu generieren und diese mit dem Original des Aufgabenblattes zu vergleichen. Allerdings haben wir auf diese Art auch nach längerer Suche keine Kollisionen finden können, während bei generierten Originalfiles nach durchschnittlich je 80000 generierten Files eine Kollision entdeckt wurde.
 
 \subsubsection{Datenstrukturen}
 Unsere Lösung verwendet zwei Hashmaps (Integer, String). Eine für alle Variationen der Original-Mail und eine für die falschen Mails. Für den Key benutzen wir jeweils den Hashwert und als Value wird der Variations-Integer dieser Mail gesetzt.
