@@ -15,8 +15,8 @@ import ch.fhnw.guerbereggenschwiler.apsi.lab2.Controller;
 /**
  * Servlet implementation class RattleBits
  */
-@WebServlet("/RattleBits")
-public class RattleBits extends HttpServlet {
+@WebServlet("/RattleBits/Login")
+public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private final Controller controller;
@@ -26,7 +26,7 @@ public class RattleBits extends HttpServlet {
 	 * @throws ClassNotFoundException
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public RattleBits() throws SQLException, ClassNotFoundException {
+	public LoginServlet() throws SQLException, ClassNotFoundException {
 		super();
 		Class.forName("com.mysql.jdbc.Driver");
 		controller = new Controller(
@@ -41,18 +41,7 @@ public class RattleBits extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-		String page = request.getParameter("page");
-		if ("login".equals(page)) {
 			controller.loginPage(request, response);
-		} else if ("register".equals(page)) {
-			controller.registerPage(request, response);
-		} else if ("activate".equals(page)) {
-			controller.activatePage(request, response);
-		} else {
-			controller.indexPage(request, response);
-		}
-
 	}
 
 	/**
@@ -62,13 +51,9 @@ public class RattleBits extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-		if (request.getParameter("register") != null) {
-			controller.registerPage(request, response);
-		} else if (request.getParameter("login") != null) {
-			controller.loginPage(request, response);
-		}
-
+		
+			controller.doLogin(request, response);
+			
 	}
 
 }

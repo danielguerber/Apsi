@@ -7,7 +7,6 @@
 <title>RattleBits</title>
 </head>
 <body>
-${message}<br />
-<a href="/ApsiUebung2/RattleBits">zur Startseite</a>
+<a href="/ApsiUebung2/RattleBits/Register">register</a> | <a href="/ApsiUebung2/RattleBits/Login">login</a>
 </body>
 </html>

@@ -15,11 +15,11 @@ import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Company;
 
 public class Controller {
 
-	private static String REGISTER = "rattle_bits/register.jsp";
-	private static String SUCCESS = "rattle_bits/success.jsp";
-	private static String LOGIN = "rattle_bits/login.jsp";
-	private static String INDEX = "rattle_bits/index.jsp";
-	private static String OVERVIEW = "rattle_bits/overview.jsp";
+	private static String REGISTER = "register.jsp";
+	private static String SUCCESS = "success.jsp";
+	private static String LOGIN = "login.jsp";
+	private static String INDEX = "index.jsp";
+	private static String OVERVIEW = "overview.jsp";
 
 	private final Connection con;
 
@@ -36,34 +36,15 @@ public class Controller {
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO: overview / passwort change page
 	}
-
-	public void activatePage(HttpServletRequest request,
+	
+	public void registerPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
-		Company c = new Company(con);
-		boolean activate = false;
-		try {
-			activate = c.activate(request.getParameter("acode"));
-		} catch (SQLException e) {
-			messages.add("Datenbankverbindung fehlgeschlagen, bitte versuchen sie es später noch einmal");
-		}
-		if (activate) {
-			c.sendLoginData();
-			request.setAttribute(
-					"message",
-					"Aktivierung erfolgreich! Sie bekommen ihr Username und Passwort per Mail zugesant.");
-			request.getRequestDispatcher(SUCCESS).forward(request, response);
-		} else {
-			if (messages.size() == 0) {
-				messages.add("activierungs code ist ungültig");
-			}
-			request.setAttribute("message", messages.get(0));
-			request.getRequestDispatcher(SUCCESS).forward(request, response);
-		}
-
+		request.setAttribute("messages", messages);
+		request.getRequestDispatcher(REGISTER).forward(request, response);
 	}
 
-	public void registerPage(HttpServletRequest request,
+	public void doRegister(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		Company c = new Company(con);
@@ -90,10 +71,7 @@ public class Controller {
 			try {
 				c.save();
 			} catch (SQLException e) {
-				messages.add("Datenbankverbindung fehlgeschlagen, bitte versuchen sie es später noch einmal");
-				request.setAttribute("messages", messages);
-				request.getRequestDispatcher(REGISTER).forward(request,
-						response);
+				response.sendError(500);
 			}
 			c.sendActivationCode();
 			request.setAttribute("message",
@@ -104,32 +82,39 @@ public class Controller {
 
 	public void loginPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		if (!request.isSecure()) {
-			String secureAdresse = request.getRequestURL().replace(0, 4,
-					"https")
-					+ "?" + request.getQueryString();
-			System.out.println(secureAdresse);
-			response.sendRedirect(secureAdresse);
-		}
 		List<String> messages = new ArrayList<>();
-		Company c = new Company(con);
-		boolean login = false;
-		try {
-			login = c.checkLogin(request.getParameter("user"),
-					request.getParameter("password"));
-		} catch (SQLException e) {
-			messages.add("Datenbankverbindung fehlgeschlagen, bitte versuchen sie es später noch einmal");
-		}
-		if (login) {
-			request.getSession().setAttribute("userId", c.getId());
-			request.getSession().setAttribute("username", c.getUsername());
-			request.getRequestDispatcher(OVERVIEW).forward(request, response);
-		} else {
-			if (messages.size() == 0) {
-				messages.add("username oder passwort ist ungültig");
-			}
-			request.setAttribute("messages", messages);
-			request.getRequestDispatcher(LOGIN).forward(request, response);
-		}
+		request.setAttribute("messages", messages);
+		request.getRequestDispatcher(LOGIN).forward(request, response);
 	}
+	
+	public void doLogin(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+			List<String> messages = new ArrayList<>();
+			Company c = new Company(con);
+			boolean login = false;
+			try {
+				login = c.checkLogin(request.getParameter("user"),
+						request.getParameter("password"));
+				
+				if (login) {
+					request.getSession().setAttribute("userId", c.getId());
+					request.getSession().setAttribute("username", c.getUsername());
+			        response.sendRedirect("../Overview");
+				} else {
+					if (messages.size() == 0) {
+						messages.add("username oder passwort ist ungültig");
+					}
+					
+					request.setAttribute("messages", messages);
+					request.getRequestDispatcher(LOGIN).forward(request, response);
+				}
+				
+			} catch (SQLException e) {
+				response.sendError(500);
+			}
+			
+		}
+	
+		
 }
