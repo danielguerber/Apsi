@@ -63,7 +63,7 @@ public class Controller {
 
 	}
 
-	public void regsiterPage(HttpServletRequest request,
+	public void registerPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		Company c = new Company(con);
