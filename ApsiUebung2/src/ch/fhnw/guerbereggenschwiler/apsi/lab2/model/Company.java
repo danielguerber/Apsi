@@ -1,5 +1,9 @@
 package ch.fhnw.guerbereggenschwiler.apsi.lab2.model;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -127,9 +131,12 @@ public class Company {
 	    		errors.add("Ungültige Zeichen in der Adresse");
 	    	}
 	    }
-	    if (zip != 0) {
-	    	// TODO: validate ZIP
-	    }
+	    if (zip >= 1000 && zip <= 9999) {
+	    	if(!ValidatePlz(zip))
+	    		errors.add("Ungültige Postleitzahl.");
+	    } else {
+	    	errors.add("Ungültige Postleitzahl.");
+        }
 	    if (town != null) {
 	    	if (town.trim().isEmpty()) {
 	    		errors.add("Stadt eingeben");
@@ -247,7 +254,7 @@ public class Company {
 		return new String(data);
 	}
 	
-	private static boolean MxLookup(String hostname) {
+	private static final boolean MxLookup(String hostname) {
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put("java.naming.factory.initial",
 				"com.sun.jndi.dns.DnsContextFactory");
@@ -258,10 +265,32 @@ public class Company {
 			if (attr == null) {
 				return false;
 			} else {
-				return true;// we have found records we are happy.
+				return true;
 			}
 		} catch (NamingException e) {
 			return false;
 		}
+	}
+	
+	private static final boolean ValidatePlz(int zip) {
+		URL url;
+		HttpURLConnection conn;
+		BufferedReader rd;
+		String line;
+		try {
+			url = new URL("http://www.post.ch/db/owa/pv_plz_pack/pr_check_data?p_language=de&p_nap="+zip+"&p_localita=&p_cantone=&p_tipo=luogo");
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			while ((line = rd.readLine()) != null) {
+				if(line.contains("Keine PLZ gefunden"))
+					return false;
+			}
+			rd.close();
+                        return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
