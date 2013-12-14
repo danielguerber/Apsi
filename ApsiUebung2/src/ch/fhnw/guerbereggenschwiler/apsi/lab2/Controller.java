@@ -47,16 +47,22 @@ public class Controller {
 	public void doRegister(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
-		Company c = new Company(con);
-		c.setName(request.getParameter("firma"));
-		c.setAddress(request.getParameter("address"));
+		
+		int zip = 0;
+		
 		try {
-			c.setZip(Integer.parseInt(request.getParameter("plz")));
+			zip = Integer.parseInt(request.getParameter("plz"));
 		} catch (NumberFormatException e) {
 			messages.add("Ungültige PLZ");
 		}
-		c.setTown(request.getParameter("town"));
-		c.setMail(request.getParameter("mail"));
+		
+		//TODO: generate username / password/ make overload
+		Company c = new Company(0, "", "",
+				request.getParameter("firma"),
+				request.getParameter("address"),
+				zip,
+				request.getParameter("town"),
+				request.getParameter("mail"));
 		messages.addAll(c.validate());
 		request.setAttribute("firma", c.getName());
 		request.setAttribute("address", c.getAddress());
@@ -67,15 +73,14 @@ public class Controller {
 			request.setAttribute("messages", messages);
 			request.getRequestDispatcher(REGISTER).forward(request, response);
 		} else {
-			c.setActivation(UUID.randomUUID().toString());
 			try {
 				c.save();
 			} catch (SQLException e) {
 				response.sendError(500);
 			}
-			c.sendActivationCode();
+			c.sendLoginData();
 			request.setAttribute("message",
-					"Registrierung erfolgreich, bitte warten sie auf den Aktivierungslink per Mail");
+					"Registrierung erfolgreich, bitte warten sie auf die Zugangsdaten per Mail");
 			request.getRequestDispatcher(SUCCESS).forward(request, response);
 		}
 	}
@@ -91,13 +96,11 @@ public class Controller {
 			HttpServletResponse response) throws ServletException, IOException {
 
 			List<String> messages = new ArrayList<>();
-			Company c = new Company(con);
-			boolean login = false;
 			try {
-				login = c.checkLogin(request.getParameter("user"),
+				Company c = Company.checkLogin(request.getParameter("user"),
 						request.getParameter("password"));
 				
-				if (login) {
+				if (c!=null) {
 					request.getSession().setAttribute("userId", c.getId());
 					request.getSession().setAttribute("username", c.getUsername());
 			        response.sendRedirect("../Overview");

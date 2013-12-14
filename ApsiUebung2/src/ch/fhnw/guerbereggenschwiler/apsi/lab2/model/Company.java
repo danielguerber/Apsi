@@ -17,102 +17,83 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 public class Company {
-	
-	private final Connection con;
+	//TODO: remove if possible
 	private int id;
 	private String username;
-	private String password;
-	private String name;
-	private String address;
-	private int zip;
-	private String town;
-	private String mail;
-	private String activation;
+	private final String password;
+	private final String name;
+	private final String address;
+	private final int zip;
+	private final String town;
+	private final String mail;
 	
-	public Company(Connection con) {
-		this.con = con;
+	
+	
+	public Company(int id, String username, String password,
+			String name, String address, int zip, String town, String mail) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.name = name;
+		this.address = address;
+		this.zip = zip;
+		this.town = town;
+		this.mail = mail;
 	}
 
 	public final int getId() {
 		return id;
 	}
-	public final void setId(int id) {
-		this.id = id;
-	}
+
 	public final String getUsername() {
 		return username;
 	}
-	public final void setUsername(String username) {
-		this.username = username;
-	}
+
 	public final String getPassword() {
 		return password;
 	}
-	public final void setPassword(String password, boolean hash) {
-		this.password = hash ? hash(password) : password;
-	}
+
 	public final String getName() {
 		return name;
 	}
-	public final void setName(String name) {
-		this.name = name;
-	}
+
 	public final String getAddress() {
 		return address;
 	}
-	public final void setAddress(String address) {
-		this.address = address;
-	}
+
 	public final int getZip() {
 		return zip;
 	}
-	public final void setZip(int zip) {
-		this.zip = zip;
-	}
+
 	public final String getTown() {
 		return town;
 	}
-	public final void setTown(String town) {
-		this.town = town;
-	}
+
 	public final String getMail() {
 		return mail;
 	}
-	public final void setMail(String mail) {
-		this.mail = mail;
-	}
-	public final String getActivation() {
-		return activation;
-	}
 
-	public final void setActivation(String activation) {
-		this.activation = activation;
-	}
-	
-	public boolean checkLogin(String user, String password) throws SQLException {
-		if (user == null || password == null) return false;
+	public static Company checkLogin(String user, String password) throws SQLException {
+		if (user == null || password == null) return null;
+		
+		Connection con = ConnectionHandler.getConnection();
 		
 		PreparedStatement stm = con.prepareStatement("SELECT `id`, `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? AND activation IS NULL");
 		stm.setString(1, user);
 		stm.setString(2, hash(password));
 		ResultSet rs = stm.executeQuery();
 		if (rs.next()) {
-			id = rs.getInt(1);
-			username = rs.getString(2);
-			name = rs.getString(3);
-			address = rs.getString(4);
-			zip = rs.getInt(5);
-			town = rs.getString(6);
-			mail = rs.getString(7);
-			return true;
+			return new Company(rs.getInt(1), 
+					rs.getString(2), 
+					"", 
+					rs.getString(3),
+					rs.getString(4),
+					rs.getInt(5),
+					rs.getString(6),
+					rs.getString(7));
 		}
-		else return false;
-	}
-	
-	public boolean activate(String activationCode) throws SQLException {
-		PreparedStatement stm = con.prepareStatement("UPDATE company SET activation = NULL WHERE activation = ?");
-		stm.setString(1, activationCode);
-		return stm.executeUpdate() == 1 ? true : false;
+		else return null;
 	}
 
 	public List<String> validate() {
@@ -170,6 +151,8 @@ public class Company {
 	}
 	
 	public final Company save() throws SQLException {
+		Connection con = ConnectionHandler.getConnection();
+		
 		PreparedStatement stm;
 		if (id == 0) {
 			stm = con.prepareStatement("INSERT INTO `company`(`username`, `password`, `name`, `address`, `zip`, `town`, `mail`, `activation`) VALUES (?,?,?,?,?,?,?,?)");
@@ -184,15 +167,12 @@ public class Company {
 		stm.setInt(5, zip);
 		stm.setString(6, town);
 		stm.setString(7, mail);
-		stm.setString(8, activation);
+		//TODO: check if delete
+		stm.setString(8, "");
 		stm.execute();
 		return this;
 	}
 	
-	public final boolean sendActivationCode() {
-		// TODO: implement activation code sending
-		return false;
-	}
 	
 	public final boolean sendLoginData() {
 		// TODO: implement login data sending
@@ -204,7 +184,6 @@ public class Company {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
-		result = prime * result + ((con == null) ? 0 : con.hashCode());
 		result = prime * result + id;
 		result = prime * result + ((mail == null) ? 0 : mail.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -221,20 +200,10 @@ public class Company {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Company other = (Company) obj;
-		if (activation == null) {
-			if (other.activation != null)
-				return false;
-		} else if (!activation.equals(other.activation))
-			return false;
 		if (address == null) {
 			if (other.address != null)
 				return false;
 		} else if (!address.equals(other.address))
-			return false;
-		if (con == null) {
-			if (other.con != null)
-				return false;
-		} else if (!con.equals(other.con))
 			return false;
 		if (id != other.id)
 			return false;
