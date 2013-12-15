@@ -33,8 +33,7 @@ public class Controller {
 		} else {
 			List<String> messages = new ArrayList<>();
 			request.setAttribute("messages", messages);
-			//TODO: Quote
-			request.setAttribute("quote","Quotes are useless");
+			request.setAttribute("quote", Utils.encodeHTML(Company.getFortuneQuote()));
 			request.getRequestDispatcher(OVERVIEW).forward(request, response);
 		}
 	}
