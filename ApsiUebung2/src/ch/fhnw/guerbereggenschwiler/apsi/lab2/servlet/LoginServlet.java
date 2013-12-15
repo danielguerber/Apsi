@@ -18,7 +18,6 @@ import ch.fhnw.guerbereggenschwiler.apsi.lab2.Controller;
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private final Controller controller;
 
 	/**
 	 * @throws SQLException
@@ -28,7 +27,6 @@ public class LoginServlet extends HttpServlet {
 	public LoginServlet() throws SQLException, ClassNotFoundException {
 		super();
 		Class.forName("com.mysql.jdbc.Driver");
-		controller = new Controller();
 	}
 
 	/**
@@ -38,7 +36,7 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		controller.loginPage(request, response);
+		Controller.loginPage(request, response);
 	}
 
 	/**
@@ -48,7 +46,7 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-			controller.doLogin(request, response);
+			Controller.doLogin(request, response);
 			
 	}
 

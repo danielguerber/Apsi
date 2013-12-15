@@ -18,7 +18,6 @@ import ch.fhnw.guerbereggenschwiler.apsi.lab2.Controller;
 public class OverviewServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private final Controller controller;
 
 	/**
 	 * @throws SQLException
@@ -27,7 +26,6 @@ public class OverviewServlet extends HttpServlet {
 	 */
 	public OverviewServlet() throws SQLException, ClassNotFoundException {
 		super();
-		controller = new Controller();
 	}
 
 	/**
@@ -37,7 +35,7 @@ public class OverviewServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		controller.overviewPage(request, response);
+		Controller.overviewPage(request, response);
 	}
 
 	/**
@@ -47,7 +45,7 @@ public class OverviewServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-			controller.doChange(request, response);
+			Controller.doChange(request, response);
 			
 	}
 

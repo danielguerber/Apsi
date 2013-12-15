@@ -18,8 +18,6 @@ import ch.fhnw.guerbereggenschwiler.apsi.lab2.Controller;
 public class RegisterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private final Controller controller;
-
 	/**
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
@@ -27,7 +25,6 @@ public class RegisterServlet extends HttpServlet {
 	 */
 	public RegisterServlet() throws SQLException, ClassNotFoundException {
 		super();
-		controller = new Controller();
 	}
 
 	/**
@@ -38,7 +35,7 @@ public class RegisterServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		
-			controller.registerPage(request, response);
+			Controller.registerPage(request, response);
 
 	}
 
@@ -50,7 +47,7 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-			controller.doRegister(request, response);
+			Controller.doRegister(request, response);
 
 	}
 

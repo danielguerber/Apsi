@@ -1,6 +1,7 @@
 package ch.fhnw.guerbereggenschwiler.apsi.lab2.model;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
@@ -71,22 +72,24 @@ public class Company {
 
 	public static Company checkLogin(String user, String password) throws SQLException {
 		if (user == null || password == null) return null;
-		Connection con = ConnectionHandler.getConnection();
+		try (Connection con = ConnectionHandler.getConnection()) {
 		
-		PreparedStatement stm = con.prepareStatement("SELECT  `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? ");
-		stm.setString(1, user);
-		stm.setString(2, hash(password));
-		ResultSet rs = stm.executeQuery();
-		if (rs.next()) {
-			return new Company(
-					rs.getString(1), 
-					rs.getString(2),
-					rs.getString(3),
-					rs.getInt(4),
-					rs.getString(5),
-					rs.getString(6));
+			try (PreparedStatement stm = con.prepareStatement("SELECT  `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? ")) {
+				stm.setString(1, user);
+				stm.setString(2, hash(password));
+				ResultSet rs = stm.executeQuery();
+				if (rs.next()) {
+					return new Company(
+							rs.getString(1), 
+							rs.getString(2),
+							rs.getString(3),
+							rs.getInt(4),
+							rs.getString(5),
+							rs.getString(6));
+				}
+				else return null;
+			}
 		}
-		else return null;
 	}
 
 	public List<String> validate() {
@@ -138,35 +141,36 @@ public class Company {
 		String password = createPassword();
 		String[] data = new String[] {username, password, name, address, Integer.toString(zip), town, mail};
 
-		Connection con = ConnectionHandler.getConnection();
-		
-		PreparedStatement stm;
-		stm = con.prepareStatement("INSERT INTO `company`(`username`, `password`, `name`, `address`, `zip`, `town`, `mail`) VALUES (?,?,?,?,?,?,?)");
-		stm.setString(1, username);
-		stm.setString(2, hash(password));
-		stm.setString(3, name);
-		stm.setString(4, address);
-		stm.setInt(5, zip);
-		stm.setString(6, town);
-		stm.setString(7, mail);
-		stm.execute();
-		sendLoginData(data);
-		return this;
+		try (Connection con = ConnectionHandler.getConnection()) {
+			try (PreparedStatement stm = con.prepareStatement("INSERT INTO `company`(`username`, `password`, `name`, `address`, `zip`, `town`, `mail`) VALUES (?,?,?,?,?,?,?)")) {
+				stm.setString(1, username);
+				stm.setString(2, hash(password));
+				stm.setString(3, name);
+				stm.setString(4, address);
+				stm.setInt(5, zip);
+				stm.setString(6, town);
+				stm.setString(7, mail);
+				stm.execute();
+				sendLoginData(data);
+				return this;
+			}
+		}
 	}
 	
 	public static final boolean changePassword(String username, String oldPassword, String newPassword) throws SQLException {
 		if (username == null || oldPassword == null|| newPassword == null) return false;
 		
-		Connection con = ConnectionHandler.getConnection();
-		
-		PreparedStatement stm;
-		stm = con.prepareStatement("UPDATE `company` SET `password`= ? WHERE `username`= ? AND `password` = ?");
-		stm.setString(1, hash(newPassword));
-		stm.setString(2, username);
-		stm.setString(3, hash(oldPassword));
-		
-		stm.execute();
-		return stm.getUpdateCount() > 0;
+		try (Connection con = ConnectionHandler.getConnection()) {
+			try (PreparedStatement stm = con.prepareStatement("UPDATE `company` SET `password`= ? WHERE `username`= ? AND `password` = ?")) {
+			
+				stm.setString(1, hash(newPassword));
+				stm.setString(2, username);
+				stm.setString(3, hash(oldPassword));
+				
+				stm.execute();
+				return stm.getUpdateCount() > 0;
+			}
+		} 
 	}
 	
 	
@@ -208,21 +212,27 @@ public class Company {
 	private static final boolean validatePlz(int zip) {
 		URL url;
 		HttpURLConnection conn;
-		BufferedReader rd;
+		
 		String line;
 		try {
 			url = new URL("http://www.post.ch/db/owa/pv_plz_pack/pr_check_data?p_language=de&p_nap="+zip+"&p_localita=&p_cantone=&p_tipo=luogo");
 			conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
-			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			while ((line = rd.readLine()) != null) {
-				if(line.contains("Keine PLZ gefunden"))
-					return false;
+			InputStreamReader reader = new InputStreamReader(conn.getInputStream()); 
+			BufferedReader rd = new BufferedReader(reader);
+			try {
+				while ((line = rd.readLine()) != null) {
+					if(line.contains("Keine PLZ gefunden"))
+						return false;
+				}
+			} finally {
+				rd.close();
 			}
-			rd.close();
-                        return true;
+				
+			
+            return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 		return false;
 	}
@@ -251,20 +261,22 @@ public class Company {
 	private final String createUsername() throws SQLException {
 		String usernameBase = name.replace(" ", "");
 		int tries = 0;
-		PreparedStatement stm;
+		
 		String newUsername;
-		do {
-			newUsername = usernameBase + (tries > 0 ? tries : "");
-			tries++;
-			Connection con = ConnectionHandler.getConnection();
-		
+		boolean collision;
+		try (Connection con = ConnectionHandler.getConnection()) {
+			do {
+				newUsername = usernameBase + (tries > 0 ? tries : "");
+				tries++;
 			
-			stm = con.prepareStatement("SELECT `username` FROM `company` WHERE `username` = ? ");
-			stm.setString(1, newUsername);
-		
-		} while (stm.executeQuery().next());
-		
-		return newUsername;
+				try (PreparedStatement stm = con.prepareStatement("SELECT `username` FROM `company` WHERE `username` = ? ")) {
+					stm.setString(1, newUsername);
+					collision = stm.executeQuery().next();
+				}
+			} while (collision);
+			
+			return newUsername;
+		}
 	}
 	
 	public static final String getFortuneQuote() {
@@ -279,12 +291,12 @@ public class Company {
 			conn.setRequestMethod("GET");
 			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			while ((line = rd.readLine()) != null) {
-				if(!line.contains("<?xml") && !line.contains("<string") && !line.contains("string>") && line != null) {
+				if(!line.contains("<?xml") && !line.contains("<string") && !line.contains("string>")) {
 					quote.append(line+"\n");
 				}
 			}
 			rd.close();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			return "The quote is a lie! - Benjamin Franklin 1945";
 		}
 		return quote.toString();

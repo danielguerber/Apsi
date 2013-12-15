@@ -12,20 +12,21 @@ import javax.servlet.http.HttpServletResponse;
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Company;
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Utils;
 
-public class Controller {
-
+public final class Controller {
+	private Controller() {}
+	
 	private static String REGISTER = "register.jsp";
 	private static String SUCCESS = "success.jsp";
 	private static String LOGIN = "login.jsp";
 	private static String INDEX = "index.jsp";
 	private static String OVERVIEW = "overview.jsp";
 
-	public void indexPage(HttpServletRequest request,
+	public static void indexPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		request.getRequestDispatcher(INDEX).forward(request, response);
 	}
 
-	public void overviewPage(HttpServletRequest request,
+	public static void overviewPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		if (request.getSession().getAttribute("username") == null) {
 			response.sendRedirect("Login");
@@ -37,7 +38,7 @@ public class Controller {
 		}
 	}
 	
-	public void doChange(HttpServletRequest request,
+	public static void doChange(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		if (request.getSession().getAttribute("username") == null) {
 			response.sendRedirect("Login");
@@ -70,7 +71,7 @@ public class Controller {
 		}
 	}
 	
-	public void registerPage(HttpServletRequest request,
+	public static void registerPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("messages", messages);
@@ -82,7 +83,7 @@ public class Controller {
 		request.getRequestDispatcher(REGISTER).forward(request, response);
 	}
 
-	public void doRegister(HttpServletRequest request,
+	public static void doRegister(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("firma",  Utils.encodeHTML(request.getParameter("firma")));
@@ -123,7 +124,7 @@ public class Controller {
 		}
 	}
 
-	public void loginPage(HttpServletRequest request,
+	public static void loginPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("messages", messages);
@@ -131,7 +132,7 @@ public class Controller {
 		request.getRequestDispatcher(LOGIN).forward(request, response);
 	}
 	
-	public void doLogin(HttpServletRequest request,
+	public static void doLogin(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 			
 			List<String> messages = new ArrayList<>();

@@ -1,7 +1,6 @@
 package ch.fhnw.guerbereggenschwiler.apsi.lab2.servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,18 +17,6 @@ import ch.fhnw.guerbereggenschwiler.apsi.lab2.Controller;
 public class IndexServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private final Controller controller;
-
-	/**
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public IndexServlet() throws SQLException, ClassNotFoundException {
-		super();
-		controller = new Controller();
-	}
-
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -37,34 +24,7 @@ public class IndexServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-//		String page = request.getParameter("page");
-//		if ("login".equals(page)) {
-//			controller.loginPage(request, response);
-//		} else if ("register".equals(page)) {
-//			controller.registerPage(request, response);
-//		} else if ("activate".equals(page)) {
-//			controller.activatePage(request, response);
-//		} else {
-			controller.indexPage(request, response);
-//		}
-
+			Controller.indexPage(request, response);
 	}
-
-//	/**
-//	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-//	 *      response)
-//	 */
-//	@Override
-//	protected void doPost(HttpServletRequest request,
-//			HttpServletResponse response) throws ServletException, IOException {
-//
-//		if (request.getParameter("register") != null) {
-//			controller.registerPage(request, response);
-//		} else if (request.getParameter("login") != null) {
-//			controller.loginPage(request, response);
-//		}
-//
-//	}
 
 }
