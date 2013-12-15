@@ -282,4 +282,18 @@ public class Company {
 		}
 		return false;
 	}
+
+	public String PasswordValidate(String pw) {
+		String error = null;
+		if (password != null) {
+			if (password.trim().length() < 8) {
+				error = "Passwort zu kurz (min. 8 Zeichen).";
+			} else if (password.trim().length() > 64) {
+				error ="Passwort zu lang (max. 64 Zeichen).";
+			} else if (!password.matches("[èéÈÉäöüÄÖÜß\\-\\_\\.\\w]+")) {
+	    		error = "Ungültige Zeichen im Passwort.";
+	    	}
+		}
+		return error;
+	}
 }
