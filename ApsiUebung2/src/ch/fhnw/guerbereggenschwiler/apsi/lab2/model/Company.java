@@ -84,10 +84,9 @@ public class Company {
 
 	public static Company checkLogin(String user, String password) throws SQLException {
 		if (user == null || password == null) return null;
-		
 		Connection con = ConnectionHandler.getConnection();
 		
-		PreparedStatement stm = con.prepareStatement("SELECT `id`, `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? AND activation IS NULL");
+		PreparedStatement stm = con.prepareStatement("SELECT `id`, `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? ");
 		stm.setString(1, user);
 		stm.setString(2, hash(password));
 		ResultSet rs = stm.executeQuery();

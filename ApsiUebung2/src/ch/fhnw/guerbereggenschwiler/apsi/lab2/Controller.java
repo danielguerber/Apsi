@@ -110,22 +110,23 @@ public class Controller {
 	
 	public void doLogin(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-			request.setAttribute("username", Utils.encodeHTML(request.getParameter("username")));
+			
 			List<String> messages = new ArrayList<>();
 			try {
-				Company c = Company.checkLogin(request.getParameter("user"),
+				Company c = Company.checkLogin(request.getParameter("username"),
 						request.getParameter("password"));
 				
 				if (c!=null) {
 					request.getSession().setAttribute("userId", c.getId());
 					request.getSession().setAttribute("username", c.getUsername());
-			        response.sendRedirect("../Overview");
+			        response.sendRedirect("Overview");
 				} else {
 					if (messages.size() == 0) {
 						messages.add("username oder passwort ist ungültig");
 					}
 					
 					request.setAttribute("messages", messages);
+					request.setAttribute("username", Utils.encodeHTML(request.getParameter("username")));
 					request.getRequestDispatcher(LOGIN).forward(request, response);
 				}
 				
