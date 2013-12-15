@@ -2,10 +2,12 @@ package ch.fhnw.guerbereggenschwiler.apsi.lab2.model;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -120,7 +122,7 @@ public class Company {
 	    	}
 	    }
 	    if (zip >= 1000 && zip <= 9999) {
-	    	if(!ValidatePlz(zip))
+	    	if(!validatePlz(zip))
 	    		errors.add("Ungültige Postleitzahl.");
 	    } else {
 	    	errors.add("Ungültige Postleitzahl.");
@@ -261,7 +263,7 @@ public class Company {
 		}
 	}
 	
-	private static final boolean ValidatePlz(int zip) {
+	private static final boolean validatePlz(int zip) {
 		URL url;
 		HttpURLConnection conn;
 		BufferedReader rd;
@@ -283,17 +285,27 @@ public class Company {
 		return false;
 	}
 
-	public String ValidatePassword(String pw) {
+	private static final String validatePassword(String pw) {
 		String error = null;
-		if (password != null) {
-			if (password.trim().length() < 8) {
+		if (pw != null) {
+			if (pw.trim().length() < 8) {
 				error = "Passwort zu kurz (min. 8 Zeichen).";
-			} else if (password.trim().length() > 64) {
+			} else if (pw.trim().length() > 64) {
 				error ="Passwort zu lang (max. 64 Zeichen).";
-			} else if (!password.matches("[èéÈÉäöüÄÖÜß\\-\\_\\.\\w]+")) {
+			} else if (!pw.matches("[èéÈÉäöüÄÖÜß\\-\\_\\.\\w]+")) {
 	    		error = "Ungültige Zeichen im Passwort.";
 	    	}
 		}
 		return error;
+	}
+	
+	private static final String createPassword() {
+		SecureRandom random = new SecureRandom();
+	    return new BigInteger(130, random).toString(32);
+	}
+	
+	private static final String createUsername() {
+		SecureRandom random = new SecureRandom();
+	    return new BigInteger(130, random).toString(32);
 	}
 }
