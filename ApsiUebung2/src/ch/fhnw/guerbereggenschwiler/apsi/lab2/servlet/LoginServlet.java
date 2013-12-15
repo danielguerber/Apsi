@@ -30,9 +30,7 @@ public class LoginServlet extends HttpServlet {
 	public LoginServlet() throws SQLException, ClassNotFoundException {
 		super();
 		Class.forName("com.mysql.jdbc.Driver");
-		controller = new Controller(
-				DriverManager
-						.getConnection("jdbc:mysql://localhost/apsi_lab?user=root"));
+		controller = new Controller();
 	}
 
 	/**

@@ -21,12 +21,6 @@ public class Controller {
 	private static String INDEX = "index.jsp";
 	private static String OVERVIEW = "overview.jsp";
 
-	private final Connection con;
-
-	public Controller(Connection connection) {
-		con = connection;
-	}
-
 	public void indexPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		request.getRequestDispatcher(INDEX).forward(request, response);
@@ -34,18 +28,49 @@ public class Controller {
 
 	public void overviewPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		List<String> messages = new ArrayList<>();
-		request.setAttribute("messages", messages);
-		//TODO: Quote
-		request.setAttribute("quote","Quotes are useless");
+		if (request.getSession().getAttribute("username") == null) {
+			response.sendRedirect("Login");
+		} else {
+			List<String> messages = new ArrayList<>();
+			request.setAttribute("messages", messages);
+			//TODO: Quote
+			request.setAttribute("quote","Quotes are useless");
+			request.getRequestDispatcher(OVERVIEW).forward(request, response);
+		}
 	}
 	
 	public void doChange(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		List<String> messages = new ArrayList<>();
-		request.setAttribute("messages", messages);
-		//TODO: Quote
+		if (request.getSession().getAttribute("username") == null) {
+			response.sendRedirect("Login");
+		} else {
+			List<String> messages = new ArrayList<>();
+			
+			//TODO: Quote
 			request.setAttribute("quote","Quotes are useless");
+			
+			String newPassword = request.getParameter("newpassword");
+			String pwMessage = Company.validatePassword(newPassword);
+			if (pwMessage != null) {
+				messages.add(pwMessage);
+			} else {
+				try {
+					if (Company.changePassword((String)request.getSession().getAttribute("username"), 
+							request.getParameter("oldpassword"), 
+							newPassword))
+						messages.add("Password ge&auml;ndert");
+					else
+						messages.add("Falsches Passwort");
+				} catch (SQLException e) {
+					System.err.println(e.getMessage());
+					response.sendError(500);
+				}
+			}
+				
+			
+			request.setAttribute("messages", messages);
+			request.getRequestDispatcher(OVERVIEW).forward(request, response);
+		}
 	}
 	
 	public void registerPage(HttpServletRequest request,
@@ -78,7 +103,7 @@ public class Controller {
 		}
 		
 		//TODO: generate username / password/ make overload
-		Company c = new Company(0, "", "",
+		Company c = new Company("",
 				request.getParameter("firma"),
 				request.getParameter("address"),
 				zip,
@@ -91,12 +116,14 @@ public class Controller {
 		} else {
 			try {
 				c.save();
+				request.setAttribute("message",
+						"Registrierung erfolgreich, bitte warten sie auf die Zugangsdaten per Mail");
+				request.getRequestDispatcher(SUCCESS).forward(request, response);
 			} catch (SQLException e) {
+				System.err.println(e.getMessage());
 				response.sendError(500);
 			}
-			request.setAttribute("message",
-					"Registrierung erfolgreich, bitte warten sie auf die Zugangsdaten per Mail");
-			request.getRequestDispatcher(SUCCESS).forward(request, response);
+			
 		}
 	}
 
@@ -117,7 +144,6 @@ public class Controller {
 						request.getParameter("password"));
 				
 				if (c!=null) {
-					request.getSession().setAttribute("userId", c.getId());
 					request.getSession().setAttribute("username", c.getUsername());
 			        response.sendRedirect("Overview");
 				} else {

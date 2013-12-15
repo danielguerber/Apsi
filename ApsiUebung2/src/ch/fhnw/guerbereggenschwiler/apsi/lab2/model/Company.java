@@ -25,10 +25,7 @@ import javax.naming.directory.InitialDirContext;
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.mailservice.MailService;
 
 public class Company {
-	//TODO: remove if possible
-	private int id;
 	private String username;
-	private final String password;
 	private final String name;
 	private final String address;
 	private final int zip;
@@ -37,12 +34,10 @@ public class Company {
 	
 	
 	
-	public Company(int id, String username, String password,
+	public Company(String username, 
 			String name, String address, int zip, String town, String mail) {
 		super();
-		this.id = id;
 		this.username = username;
-		this.password = password;
 		this.name = name;
 		this.address = address;
 		this.zip = zip;
@@ -50,18 +45,10 @@ public class Company {
 		this.mail = mail;
 	}
 
-	public final int getId() {
-		return id;
-	}
-
 	public final String getUsername() {
 		return username;
 	}
-
-	public final String getPassword() {
-		return password;
-	}
-
+	
 	public final String getName() {
 		return name;
 	}
@@ -86,19 +73,18 @@ public class Company {
 		if (user == null || password == null) return null;
 		Connection con = ConnectionHandler.getConnection();
 		
-		PreparedStatement stm = con.prepareStatement("SELECT `id`, `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? ");
+		PreparedStatement stm = con.prepareStatement("SELECT  `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? ");
 		stm.setString(1, user);
 		stm.setString(2, hash(password));
 		ResultSet rs = stm.executeQuery();
 		if (rs.next()) {
-			return new Company(rs.getInt(1), 
-					rs.getString(2), 
-					"", 
+			return new Company(
+					rs.getString(1), 
+					rs.getString(2),
 					rs.getString(3),
-					rs.getString(4),
-					rs.getInt(5),
-					rs.getString(6),
-					rs.getString(7));
+					rs.getInt(4),
+					rs.getString(5),
+					rs.getString(6));
 		}
 		else return null;
 	}
@@ -155,7 +141,7 @@ public class Company {
 		Connection con = ConnectionHandler.getConnection();
 		
 		PreparedStatement stm;
-		stm = con.prepareStatement("INSERT INTO `company`(`username`, `password`, `name`, `address`, `zip`, `town`, `mail`, `activation`) VALUES (?,?,?,?,?,?,?,?)");
+		stm = con.prepareStatement("INSERT INTO `company`(`username`, `password`, `name`, `address`, `zip`, `town`, `mail`) VALUES (?,?,?,?,?,?,?)");
 		stm.setString(1, username);
 		stm.setString(2, hash(password));
 		stm.setString(3, name);
@@ -163,75 +149,30 @@ public class Company {
 		stm.setInt(5, zip);
 		stm.setString(6, town);
 		stm.setString(7, mail);
-		//TODO: check if delete
-		stm.setString(8, "");
 		stm.execute();
 		sendLoginData(data);
 		return this;
+	}
+	
+	public static final boolean changePassword(String username, String oldPassword, String newPassword) throws SQLException {
+		if (username == null || oldPassword == null|| newPassword == null) return false;
+		
+		Connection con = ConnectionHandler.getConnection();
+		
+		PreparedStatement stm;
+		stm = con.prepareStatement("UPDATE `company` SET `password`= ? WHERE `username`= ? AND `password` = ?");
+		stm.setString(1, hash(newPassword));
+		stm.setString(2, username);
+		stm.setString(3, hash(oldPassword));
+		
+		stm.execute();
+		return stm.getUpdateCount() > 0;
 	}
 	
 	
 	private final void sendLoginData(String[] data) {
 		new MailService(data);
 		// TODO: implement login data sending
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((address == null) ? 0 : address.hashCode());
-		result = prime * result + id;
-		result = prime * result + ((mail == null) ? 0 : mail.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + ((town == null) ? 0 : town.hashCode());
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
-		result = prime * result + zip;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		Company other = (Company) obj;
-		if (address == null) {
-			if (other.address != null)
-				return false;
-		} else if (!address.equals(other.address))
-			return false;
-		if (id != other.id)
-			return false;
-		if (mail == null) {
-			if (other.mail != null)
-				return false;
-		} else if (!mail.equals(other.mail))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (password == null) {
-			if (other.password != null)
-				return false;
-		} else if (!password.equals(other.password))
-			return false;
-		if (town == null) {
-			if (other.town != null)
-				return false;
-		} else if (!town.equals(other.town))
-			return false;
-		if (username == null) {
-			if (other.username != null)
-				return false;
-		} else if (!username.equals(other.username))
-			return false;
-		if (zip != other.zip)
-			return false;
-		return true;
 	}
 	
 	private static String hash(String s) {
@@ -287,7 +228,7 @@ public class Company {
 		return false;
 	}
 
-	private static final String validatePassword(String pw) {
+	public static final String validatePassword(String pw) {
 		String error = null;
 		if (pw != null) {
 			if (pw.trim().length() < 8) {
@@ -297,6 +238,8 @@ public class Company {
 			} else if (!pw.matches("[èéÈÉäöüÄÖÜß\\-\\_\\.\\w]+")) {
 	    		error = "Ungültige Zeichen im Passwort.";
 	    	}
+		} else {
+			error = "Passwort zu kurz (min. 8 Zeichen).";
 		}
 		return error;
 	}
