@@ -26,14 +26,14 @@
 <table>
 	<tr>
 		<th>Username:</th>
-		<td><input type="text" name="username" value="${param.username}"/></td>
+		<td><input type="text" name="username" value="<%= request.getAttribute("username") %>"/></td>
 	</tr>
 	<tr>
 		<th>Password:</th>
-		<td><input type="text" name="password" value="${param.password}" /></td>
+		<td><input type="password" name="password" value="" /></td>
 	</tr>
 	<tr>
-		<td colspan="2"><input type="submit" name="login" value="Registrieren" /></td>
+		<td colspan="2"><input type="submit" name="login" value="Einloggen" /></td>
 	</tr>
 </table>
 </form>

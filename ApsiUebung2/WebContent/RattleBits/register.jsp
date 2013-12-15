@@ -27,23 +27,23 @@
 <table>
 	<tr>
 		<th>Firma:</th>
-		<td><input type="text" name="firma" value="${param.firma}"/></td>
+		<td><input type="text" name="firma" value="<%= request.getAttribute("firma") %>"/></td>
 	</tr>
 	<tr>
 		<th>Adresse:</th>
-		<td><input type="text" name="address" value="${param.address}" /></td>
+		<td><input type="text" name="address" value="<%= request.getAttribute("address") %>" /></td>
 	</tr>
 	<tr>
 		<th>PLZ:</th>
-		<td><input type="text" name="plz" value="${param.plz}" /></td>
+		<td><input type="text" name="plz" value="<%= request.getAttribute("plz") %>" /></td>
 	</tr>
 	<tr>
 		<th>Stadt:</th>
-		<td><input type="text" name="town" value="${param.town}" /></td>
+		<td><input type="text" name="town" value="<%= request.getAttribute("town") %>" /></td>
 	</tr>
 	<tr>
 		<th>E-Mail:</th>
-		<td><input type="text" name="mail" value="${param.mail}" /></td>
+		<td><input type="text" name="mail" value="<%= request.getAttribute("mail") %>" /></td>
 	</tr>
 	<tr>
 		<td colspan="2"><input type="submit" name="register" value="Registrieren" /></td>

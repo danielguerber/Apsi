@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Company;
+import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Utils;
 
 public class Controller {
 
@@ -33,19 +34,40 @@ public class Controller {
 
 	public void overviewPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		// TODO: overview / passwort change page
+		List<String> messages = new ArrayList<>();
+		request.setAttribute("messages", messages);
+		//TODO: Quote
+		request.setAttribute("quote","Quotes are useless");
+	}
+	
+	public void doChange(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		List<String> messages = new ArrayList<>();
+		request.setAttribute("messages", messages);
+		//TODO: Quote
+			request.setAttribute("quote","Quotes are useless");
 	}
 	
 	public void registerPage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("messages", messages);
+		request.setAttribute("firma", "");
+		request.setAttribute("address", "");
+		request.setAttribute("plz", "");
+		request.setAttribute("town", "");
+		request.setAttribute("mail", "");
 		request.getRequestDispatcher(REGISTER).forward(request, response);
 	}
 
 	public void doRegister(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
+		request.setAttribute("firma",  Utils.encodeHTML(request.getParameter("firma")));
+		request.setAttribute("address",  Utils.encodeHTML(request.getParameter("address")));
+		request.setAttribute("plz",  Utils.encodeHTML(request.getParameter("plz")));
+		request.setAttribute("town", Utils.encodeHTML(request.getParameter("town")));
+		request.setAttribute("mail",  Utils.encodeHTML(request.getParameter("mail")));
 		
 		int zip = 0;
 		
@@ -63,11 +85,6 @@ public class Controller {
 				request.getParameter("town"),
 				request.getParameter("mail"));
 		messages.addAll(c.validate());
-		request.setAttribute("firma", c.getName());
-		request.setAttribute("address", c.getAddress());
-		request.setAttribute("plz", String.valueOf(c.getZip()));
-		request.setAttribute("town", c.getTown());
-		request.setAttribute("mail", c.getMail());
 		if (messages.size() > 0) {
 			request.setAttribute("messages", messages);
 			request.getRequestDispatcher(REGISTER).forward(request, response);
@@ -77,7 +94,6 @@ public class Controller {
 			} catch (SQLException e) {
 				response.sendError(500);
 			}
-			c.sendLoginData();
 			request.setAttribute("message",
 					"Registrierung erfolgreich, bitte warten sie auf die Zugangsdaten per Mail");
 			request.getRequestDispatcher(SUCCESS).forward(request, response);
@@ -88,12 +104,13 @@ public class Controller {
 			HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("messages", messages);
+		request.setAttribute("username", "");
 		request.getRequestDispatcher(LOGIN).forward(request, response);
 	}
 	
 	public void doLogin(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
+			request.setAttribute("username", Utils.encodeHTML(request.getParameter("username")));
 			List<String> messages = new ArrayList<>();
 			try {
 				Company c = Company.checkLogin(request.getParameter("user"),

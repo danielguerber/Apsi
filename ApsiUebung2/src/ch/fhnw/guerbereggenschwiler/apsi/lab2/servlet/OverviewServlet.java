@@ -11,13 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.Controller;
-import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Utils;
 
 /**
  * Servlet implementation class RattleBits
  */
 @WebServlet("/RattleBits/Login")
-public class LoginServlet extends HttpServlet {
+public class OverviewServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private final Controller controller;
@@ -27,7 +26,7 @@ public class LoginServlet extends HttpServlet {
 	 * @throws ClassNotFoundException
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public LoginServlet() throws SQLException, ClassNotFoundException {
+	public OverviewServlet() throws SQLException, ClassNotFoundException {
 		super();
 		Class.forName("com.mysql.jdbc.Driver");
 		controller = new Controller(
@@ -42,7 +41,7 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		controller.loginPage(request, response);
+		controller.overviewPage(request, response);
 	}
 
 	/**
@@ -52,7 +51,7 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-			controller.doLogin(request, response);
+			controller.doChange(request, response);
 			
 	}
 
