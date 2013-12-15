@@ -1,4 +1,4 @@
-package ch.fhnw.guerbereggenschwiler.apsi.lab2.mailservice;
+	package ch.fhnw.guerbereggenschwiler.apsi.lab2.mailservice;
 
 import java.util.Properties;
 import javax.mail.Message;
@@ -9,12 +9,14 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
  
-public class MailService {
+public final class MailService {
 	
 	private final static String USERNAME = "rattlebits2013";
 	private final static String PASSWORD = "ApsiLab02";
 	
-	public final void SendMail(String to, String company, String username, String password) {
+	public MailService(String[] data) {
+		if(data.length != 7)
+			return;
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.socketFactory.port", "465");
@@ -34,10 +36,16 @@ public class MailService {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress("rattlebits2013@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(to));
+					InternetAddress.parse(data[6]));
 			message.setSubject("Your temporary username and password");
-			message.setText("Dear "+ company + ","
-					+"\n\nThank you for your registration on RattleBits.\n\nUsername: "+username+"\nPassword: "+password
+			message.setText("Dear "+ data[2] + ","
+					+"\n\nThank you for your registration on RattleBits. Your registration data are:\n"
+					+"\nCompany: " + data[2]
+					+"\nAddress: " + data[3]
+					+"\nZipCode: " + data[4]
+					+"\nCity: " + data[5]
+					+"\n\nYou can login with this data:"
+					+ "\nUsername: " + data[0] + "\nPassword: " + data[1]
 					+"\n\nPlease change your password after your first login.\n\nRattleBits AG");
  
 			Transport.send(message); 
