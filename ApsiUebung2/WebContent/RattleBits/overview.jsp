@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>RattleBits</title>
 </head>
-<body>
+<body bgcolor="LightGray">
 
 </body>
 </html>

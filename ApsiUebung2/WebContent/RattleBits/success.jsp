@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>RattleBits</title>
 </head>
-<body>
+<body bgcolor="LightGray">
 ${message}<br />
 <a href="/ApsiUebung2/RattleBits/Index">zur Startseite</a>
 </body>

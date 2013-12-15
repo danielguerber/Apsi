@@ -12,7 +12,7 @@
 }
 </style>
 </head>
-<body>
+<body bgcolor="LightGray">
 <form method="POST" action='/ApsiUebung2/RattleBits/Login' name="login">
 <ul class="error">
 <%

@@ -6,7 +6,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>RattleBits</title>
 </head>
-<body>
-<a href="/ApsiUebung2/RattleBits/Register">register</a> | <a href="/ApsiUebung2/RattleBits/Login">login</a>
+<body bgcolor="LightGray">
+<h1>RattleBits AG</h1>
+<b><a href="/ApsiUebung2/RattleBits/Register">register</a> | <a href="/ApsiUebung2/RattleBits/Login">login</a></b>
 </body>
 </html>

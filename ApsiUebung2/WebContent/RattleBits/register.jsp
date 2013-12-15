@@ -12,7 +12,8 @@
 }
 </style>
 </head>
-<body>
+<body bgcolor="LightGray">
+<h1>RattleBits AG</h1>
 <form method="POST" action='/ApsiUebung2/RattleBits/Register' name="register">
 <ul class="error">
 <%

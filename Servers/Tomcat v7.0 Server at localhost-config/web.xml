@@ -4594,9 +4594,9 @@
   <!-- to use within your application.                                       -->
 
     <welcome-file-list>
-        <welcome-file>rattle_bits/index.html</welcome-file>
-        <welcome-file>rattle_bits/index.htm</welcome-file>
-        <welcome-file>rattle_bits/index.jsp</welcome-file>
+        <welcome-file>RattleBits/index.html</welcome-file>
+        <welcome-file>RattleBits/index.htm</welcome-file>
+        <welcome-file>RattleBits/index.jsp</welcome-file>
     </welcome-file-list>
 
 </web-app>
