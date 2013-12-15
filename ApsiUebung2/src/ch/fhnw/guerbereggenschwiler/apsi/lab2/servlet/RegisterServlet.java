@@ -1,7 +1,6 @@
 package ch.fhnw.guerbereggenschwiler.apsi.lab2.servlet;
 
 import java.io.IOException;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;

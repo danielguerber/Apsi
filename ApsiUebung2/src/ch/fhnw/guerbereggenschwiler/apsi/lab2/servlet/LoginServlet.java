@@ -1,7 +1,6 @@
 package ch.fhnw.guerbereggenschwiler.apsi.lab2.servlet;
 
 import java.io.IOException;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.Controller;
-import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Utils;
 
 /**
  * Servlet implementation class RattleBits

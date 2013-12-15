@@ -13,7 +13,7 @@ public final class ConnectionHandler {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			//TODO: log
+			System.err.println(e.getMessage());
 		}
 		
 		return DriverManager.getConnection("jdbc:mysql://localhost/apsi_lab?user=root");

@@ -1,7 +1,6 @@
 package ch.fhnw.guerbereggenschwiler.apsi.lab2;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +44,7 @@ public class Controller {
 		} else {
 			List<String> messages = new ArrayList<>();
 			
-			//TODO: Quote
-			request.setAttribute("quote","Quotes are useless");
+			request.setAttribute("quote",Utils.encodeHTML(Company.getFortuneQuote()));
 			
 			String newPassword = request.getParameter("newpassword");
 			String pwMessage = Company.validatePassword(newPassword);
@@ -101,7 +99,6 @@ public class Controller {
 			messages.add("Ungültige PLZ");
 		}
 		
-		//TODO: generate username / password/ make overload
 		Company c = new Company("",
 				request.getParameter("firma"),
 				request.getParameter("address"),

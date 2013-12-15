@@ -172,7 +172,6 @@ public class Company {
 	
 	private final void sendLoginData(String[] data) {
 		new MailService(data);
-		// TODO: implement login data sending
 	}
 	
 	private static String hash(String s) {
