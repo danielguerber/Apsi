@@ -15,7 +15,7 @@ import ch.fhnw.guerbereggenschwiler.apsi.lab2.Controller;
 /**
  * Servlet implementation class RattleBits
  */
-@WebServlet("/RattleBits/Login")
+@WebServlet("/RattleBits/Overview")
 public class OverviewServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
