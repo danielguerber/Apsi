@@ -102,17 +102,7 @@ public class Company {
 
 	public List<String> validate() {
 		List<String> errors = new ArrayList<>();
-		
-		if (password != null) {
-			if (password.trim().length() < 8) {
-				errors.add("Passwort zu kurz (min. 8 Zeichen).");
-			} else if (password.trim().length() > 64) {
-				errors.add("Passwort zu lang (max. 64 Zeichen).");
-			} else if (!password.matches("[èéÈÉäöüÄÖÜß\\-\\_\\.\\w]+")) {
-	    		errors.add("Ungültige Zeichen im Passwort.");
-	    	}
-		}
-		
+				
 	    if (name != null) {
 	    	if (name.trim().isEmpty()) {
 	    		errors.add("Firmenname eingeben.");
@@ -135,11 +125,11 @@ public class Company {
 	    } else {
 	    	errors.add("Ungültige Postleitzahl.");
         }
-	    if (town != null) {
+	    if (town != null) { 
 	    	if (town.trim().isEmpty()) {
 	    		errors.add("Keine Stadt.");
-	    	} else if (!address.matches("[èéÈÉäöüÄÖÜß\\-\\.\\sa-zA-Z]+")) {
-	    		errors.add("Ungültiger Stadt.");
+	    	} else if (!town.matches("[èéÈÉäöüÄÖÜßa-zA-Z\\-\\.\\s]+")) {
+	    		errors.add("Ungültige Stadt.");
 	    	}
 	    }
 	    if (mail != null && !mail.trim().isEmpty()) {
