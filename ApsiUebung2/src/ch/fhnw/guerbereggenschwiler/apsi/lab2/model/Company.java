@@ -253,4 +253,27 @@ public class Company {
 		SecureRandom random = new SecureRandom();
 	    return new BigInteger(130, random).toString(32);
 	}
+	
+	private static final String getFortuneQuote() {
+		URL url;
+		HttpURLConnection conn;
+		BufferedReader rd;
+		String line = null;
+		StringBuilder quote = new StringBuilder("");
+		try {
+			url = new URL("http://www.fullerdata.com/FortuneCookie/FortuneCookie.asmx/GetFortuneCookie");
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			while ((line = rd.readLine()) != null) {
+				if(!line.contains("<?xml") && !line.contains("<string") && !line.contains("string>") && line != null) {
+					quote.append(line+"\n");
+				}
+			}
+			rd.close();
+		} catch (Exception e) {
+			return "The quote is a lie! - Benjamin Franklin 1945";
+		}
+		return quote.toString();
+	}
 }
