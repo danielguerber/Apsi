@@ -283,7 +283,7 @@ public class Company {
 		return false;
 	}
 
-	public String PasswordValidate(String pw) {
+	public String ValidatePassword(String pw) {
 		String error = null;
 		if (password != null) {
 			if (password.trim().length() < 8) {
