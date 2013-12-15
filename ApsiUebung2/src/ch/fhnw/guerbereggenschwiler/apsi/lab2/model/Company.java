@@ -3,6 +3,7 @@ package ch.fhnw.guerbereggenschwiler.apsi.lab2.model;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -26,7 +27,7 @@ import javax.naming.directory.InitialDirContext;
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.mailservice.MailService;
 
 public class Company {
-	private String username;
+	private final String username;
 	private final String name;
 	private final String address;
 	private final int zip;
@@ -77,17 +78,18 @@ public class Company {
 			try (PreparedStatement stm = con.prepareStatement("SELECT  `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? ")) {
 				stm.setString(1, user);
 				stm.setString(2, hash(password));
-				ResultSet rs = stm.executeQuery();
-				if (rs.next()) {
-					return new Company(
-							rs.getString(1), 
-							rs.getString(2),
-							rs.getString(3),
-							rs.getInt(4),
-							rs.getString(5),
-							rs.getString(6));
+				try (ResultSet rs = stm.executeQuery()) {
+					if (rs.next()) {
+						return new Company(
+								rs.getString(1), 
+								rs.getString(2),
+								rs.getString(3),
+								rs.getInt(4),
+								rs.getString(5),
+								rs.getString(6));
+					}
+					else return null;
 				}
-				else return null;
 			}
 		}
 	}
@@ -175,17 +177,22 @@ public class Company {
 	
 	
 	private final void sendLoginData(String[] data) {
-		new MailService(data);
+		MailService.sendRegistrationMail(data);
 	}
 	
 	private static String hash(String s) {
 		byte[] data = null;
 		try {
-			data = MessageDigest.getInstance("SHA-256").digest(s.getBytes());
-		} catch (NoSuchAlgorithmException e) {
-			data = s.getBytes();
+			try {
+				data = MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8"));
+			} catch (NoSuchAlgorithmException e) {
+				data = s.getBytes("UTF-8");
+			}
+			return new String(data, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			//JVM Violates standard
+			throw new AssertionError("UTF-8 is not supported on this JVM");
 		}
-		return new String(data);
 	}
 	
 	private static final boolean mxLookup(String mail) {
@@ -218,7 +225,8 @@ public class Company {
 			url = new URL("http://www.post.ch/db/owa/pv_plz_pack/pr_check_data?p_language=de&p_nap="+zip+"&p_localita=&p_cantone=&p_tipo=luogo");
 			conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
-			InputStreamReader reader = new InputStreamReader(conn.getInputStream()); 
+			String encoding = conn.getContentEncoding();
+			InputStreamReader reader = new InputStreamReader(conn.getInputStream(), encoding == null ? "UTF-8" : encoding); 
 			BufferedReader rd = new BufferedReader(reader);
 			try {
 				while ((line = rd.readLine()) != null) {
@@ -231,7 +239,7 @@ public class Company {
 				
 			
             return true;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.err.println(e.getMessage());
 		}
 		return false;
@@ -282,14 +290,15 @@ public class Company {
 	public static final String getFortuneQuote() {
 		URL url;
 		HttpURLConnection conn;
-		BufferedReader rd;
+		BufferedReader rd = null;
 		String line = null;
 		StringBuilder quote = new StringBuilder("");
 		try {
 			url = new URL("http://www.fullerdata.com/FortuneCookie/FortuneCookie.asmx/GetFortuneCookie");
 			conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
-			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String encoding = conn.getContentEncoding();
+			rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), encoding == null ? "utf-8" : encoding));
 			while ((line = rd.readLine()) != null) {
 				if(!line.contains("<?xml") && !line.contains("<string") && !line.contains("string>")) {
 					quote.append(line+"\n");
@@ -297,6 +306,12 @@ public class Company {
 			}
 			rd.close();
 		} catch (IOException e) {
+			try {
+				if (rd != null)
+					rd.close();
+			} catch (IOException e2) {
+				System.err.println(e2.getMessage());
+			}
 			return "The quote is a lie! - Benjamin Franklin 1945";
 		}
 		return quote.toString();
