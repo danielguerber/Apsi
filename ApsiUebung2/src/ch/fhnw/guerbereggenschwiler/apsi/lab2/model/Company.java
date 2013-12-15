@@ -249,9 +249,23 @@ public class Company {
 	    return new BigInteger(130, random).toString(32);
 	}
 	
-	private static final String createUsername() {
-		SecureRandom random = new SecureRandom();
-	    return new BigInteger(130, random).toString(32);
+	private final String createUsername() throws SQLException {
+		String usernameBase = name.replace(" ", "");
+		int tries = 0;
+		PreparedStatement stm;
+		String newUsername;
+		do {
+			newUsername = usernameBase + (tries > 0 ? tries : "");
+			tries++;
+			Connection con = ConnectionHandler.getConnection();
+		
+			
+			stm = con.prepareStatement("SELECT `username` FROM `company` WHERE `username` = ? ");
+			stm.setString(1, newUsername);
+		
+		} while (stm.executeQuery().next());
+		
+		return newUsername;
 	}
 	
 	public static final String getFortuneQuote() {
