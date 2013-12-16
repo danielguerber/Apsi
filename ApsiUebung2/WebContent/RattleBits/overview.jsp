@@ -19,7 +19,9 @@
 	<li><%= it.next() %></li>
 <% } %>
 </ul>
-<%= request.getAttribute("quote") %>
+<b>Quote of the Day:</b>
+<i><%= request.getAttribute("quote") %></i>
+<br>
 <table>
 	<tr>
 		<th>Altes Passwort:</th>
