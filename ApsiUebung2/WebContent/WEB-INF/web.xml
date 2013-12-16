@@ -13,7 +13,10 @@
   <welcome-file-list>
     <welcome-file>RattleBits/Index</welcome-file>
   </welcome-file-list>
-  
+ <error-page>
+ <error-code>404</error-code>
+    <location>/RattleBits/404.jsp</location>
+</error-page> 
 <error-page>
     <location>/RattleBits/error.jsp</location>
 </error-page>
