@@ -5,6 +5,7 @@
     <web-resource-collection>
         <web-resource-name>ApsiUebung2</web-resource-name>
         <url-pattern>/RattleBits/Login</url-pattern>
+        <url-pattern>/RattleBits/Overview</url-pattern>
     </web-resource-collection>
     <user-data-constraint>
         <transport-guarantee>CONFIDENTIAL</transport-guarantee>
