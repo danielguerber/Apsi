@@ -9,25 +9,49 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sun.istack.internal.NotNull;
+
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Company;
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Utils;
 
+/**
+ * @author Daniel Guerber und Stefan Eggenschwiler
+ * This class handles the requests sent in from the servlets
+ * performs the needed changes on the model and sends a response.
+ */
 public final class Controller {
+	/**
+	 * No instance of this class should be created.
+	 */
 	private Controller() {}
 	
-	private static String REGISTER = "register.jsp";
-	private static String SUCCESS = "success.jsp";
-	private static String LOGIN = "login.jsp";
-	private static String INDEX = "index.jsp";
-	private static String OVERVIEW = "overview.jsp";
+	private final static String REGISTER = "register.jsp";
+	private final static String SUCCESS = "success.jsp";
+	private final static String LOGIN = "login.jsp";
+	private final static String INDEX = "index.jsp";
+	private final static String OVERVIEW = "overview.jsp";
 
-	public static void indexPage(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	/**
+	 * Displays the index page of the website.
+	 * @param request request for the website
+	 * @param response response sent to the website
+	 * @throws ServletException thrown by RequestDispatcher
+	 * @throws IOException thrown by RequestDispatcher
+	 */
+	public static void indexPage(@NotNull HttpServletRequest request,
+			@NotNull HttpServletResponse response) throws  IOException, ServletException {
 		request.getRequestDispatcher(INDEX).forward(request, response);
 	}
 
-	public static void overviewPage(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	/**
+	 * Displays the overview page of the website.
+	 * @param request request for the website
+	 * @param response response sent to the website
+	 * @throws ServletException thrown by RequestDispatcher
+	 * @throws IOException thrown by RequestDispatcher
+	 */
+	public static void overviewPage(@NotNull HttpServletRequest request,
+			@NotNull HttpServletResponse response) throws ServletException, IOException {
 		if (request.getSession().getAttribute("username") == null) {
 			response.sendRedirect("Login");
 		} else {
@@ -38,8 +62,15 @@ public final class Controller {
 		}
 	}
 	
-	public static void doChange(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	/**
+	 * Performs a password change and displays the overview page
+	 * @param request request for the website
+	 * @param response response sent to the website
+	 * @throws ServletException thrown by RequestDispatcher
+	 * @throws IOException thrown by RequestDispatcher
+	 */
+	public static void doChange(@NotNull HttpServletRequest request,
+			@NotNull HttpServletResponse response) throws ServletException, IOException {
 		if (request.getSession().getAttribute("username") == null) {
 			response.sendRedirect("Login");
 		} else {
@@ -71,8 +102,15 @@ public final class Controller {
 		}
 	}
 	
-	public static void registerPage(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	/**
+	 * Displays the register page of the website.
+	 * @param request request for the website
+	 * @param response response sent to the website
+	 * @throws ServletException thrown by RequestDispatcher
+	 * @throws IOException thrown by RequestDispatcher
+	 */
+	public static void registerPage(@NotNull HttpServletRequest request,
+			@NotNull HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("messages", messages);
 		request.setAttribute("firma", "");
@@ -83,8 +121,15 @@ public final class Controller {
 		request.getRequestDispatcher(REGISTER).forward(request, response);
 	}
 
-	public static void doRegister(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	/**
+	 * Performs a registration and shows a result.
+	 * @param request request for the website
+	 * @param response response sent to the website
+	 * @throws ServletException thrown by RequestDispatcher
+	 * @throws IOException thrown by RequestDispatcher
+	 */
+	public static void doRegister(@NotNull HttpServletRequest request,
+			@NotNull HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("firma",  Utils.encodeHTML(request.getParameter("firma")));
 		request.setAttribute("address",  Utils.encodeHTML(request.getParameter("address")));
@@ -124,16 +169,30 @@ public final class Controller {
 		}
 	}
 
-	public static void loginPage(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	/**
+	 * Displays the login page of the website.
+	 * @param request request for the website
+	 * @param response response sent to the website
+	 * @throws ServletException thrown by RequestDispatcher
+	 * @throws IOException thrown by RequestDispatcher
+	 */
+	public static void loginPage(@NotNull HttpServletRequest request,
+			@NotNull HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("messages", messages);
 		request.setAttribute("username", "");
 		request.getRequestDispatcher(LOGIN).forward(request, response);
 	}
 	
-	public static void doLogin(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	/**
+	 * Performs a login and redirects.
+	 * @param request request for the website
+	 * @param response response sent to the website
+	 * @throws ServletException thrown by RequestDispatcher
+	 * @throws IOException thrown by RequestDispatcher
+	 */
+	public static void doLogin(@NotNull HttpServletRequest request,
+			@NotNull HttpServletResponse response) throws ServletException, IOException {
 			
 			List<String> messages = new ArrayList<>();
 			try {

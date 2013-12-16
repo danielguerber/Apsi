@@ -1,6 +1,7 @@
 	package ch.fhnw.guerbereggenschwiler.apsi.lab2.mailservice;
 
 import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -8,15 +9,30 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import com.sun.istack.internal.NotNull;
  
+/**
+ * @author Daniel Guerber & Stefan Eggenschwiler
+ * This class provides methods to send emails.
+ */
 public final class MailService {
+	/**
+	 * No instance of this class should be created.
+	 */
+	private MailService() {}
 	
+	//Credentials for the mail account
 	private final static String USERNAME = "rattlebits2013";
 	private final static String PASSWORD = "ApsiLab02";
 	
-	public MailService(String[] data) {
-		if(data.length != 7)
-			return;
+	/**
+	 * Sends the mail after registration.
+	 * @param data {Username, Password, Name, Address, ZipCode, City, E-Mail}
+	 */
+	public static void sendRegistrationMail(@NotNull String[] data) {
+		if(data.length < 7)
+			throw new InternalError("Data field to small!");
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.socketFactory.port", "465");

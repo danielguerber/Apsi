@@ -1,9 +1,25 @@
 package ch.fhnw.guerbereggenschwiler.apsi.lab2.model;
 
+import com.sun.istack.internal.NotNull;
+
+/**
+ * @author Daniel Guerber & Stefan Eggenschwiler
+ * This class provides useful methods for the application.
+ */
 public final class Utils {
+	/**
+	 * No instances should be crated.
+	 */
 	private Utils(){}
 	
-	public static String encodeHTML(String s)
+	/**
+	 * Encodes possible dangerous characters in the String 
+	 * for usage in a HTML page.
+	 * @param s String to encode
+	 * @return encoded string
+	 */
+	@NotNull
+	public static String encodeHTML(@NotNull String s)
 	{
 	    StringBuffer out = new StringBuffer();
 	    for(int i=0; i<s.length(); i++)

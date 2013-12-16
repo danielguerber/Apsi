@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.CheckReturnValue;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -26,18 +28,38 @@ import javax.naming.directory.InitialDirContext;
 
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.mailservice.MailService;
 
+import com.sun.istack.internal.NotNull;
+
+/**
+ * @author Daniel Guerber & Stefan Eggenschwiler
+ * This class stores company information and provides functionality for companies.
+ */
 public class Company {
+	@CheckForNull
 	private final String username;
+	@CheckForNull
 	private final String name;
+	@CheckForNull
 	private final String address;
 	private final int zip;
+	@CheckForNull
 	private final String town;
+	@CheckForNull
 	private final String mail;
 	
 	
-	
-	public Company(String username, 
-			String name, String address, int zip, String town, String mail) {
+	/**
+	 * Creates an instance of the Company class.
+	 * @param username Username of the company
+	 * @param name Name of the company
+	 * @param address Address of the company
+	 * @param zip Zip code of the company
+	 * @param town Town where the company is located
+	 * @param mail Email address of the company
+	 */
+	public Company(@CheckForNull String username, 
+			@CheckForNull String name, @CheckForNull String address, 
+			int zip, @CheckForNull String town, @CheckForNull String mail) {
 		super();
 		this.username = username;
 		this.name = name;
@@ -47,31 +69,75 @@ public class Company {
 		this.mail = mail;
 	}
 
+	/**
+	 * Gets the username of the company.
+	 * @return username
+	 */
+	@CheckForNull 
+	@CheckReturnValue
 	public final String getUsername() {
 		return username;
 	}
 	
+	/**
+	 * Gets the name of the company.
+	 * @return name
+	 */
+	@CheckForNull 
+	@CheckReturnValue
 	public final String getName() {
 		return name;
 	}
 
+	/**
+	 * Gets the address of the company.
+	 * @return address
+	 */
+	@CheckForNull 
+	@CheckReturnValue
 	public final String getAddress() {
 		return address;
 	}
 
+	/**
+	 * Gets the zip code of the company.
+	 * @return zip code
+	 */
+	@CheckForNull 
+	@CheckReturnValue
 	public final int getZip() {
 		return zip;
 	}
 
+	/**
+	 * Gets the town of the company.
+	 * @return town
+	 */
+	@CheckForNull 
+	@CheckReturnValue
 	public final String getTown() {
 		return town;
 	}
 
+	/**
+	 * Gets the email address of the company.
+	 * @return email address
+	 */
+	@CheckForNull 
+	@CheckReturnValue
 	public final String getMail() {
 		return mail;
 	}
 
-	public static Company checkLogin(String user, String password) throws SQLException {
+	/**
+	 * Checks if login data is correct and loads the user data.
+	 * @param user Username for the company to log in
+	 * @param password Password for the company to log in
+	 * @return Data of the company
+	 * @throws SQLException thrown if problems with database occur
+	 */
+	public static Company checkLogin(@CheckForNull String user,
+			@CheckForNull String password) throws SQLException {
 		if (user == null || password == null) return null;
 		try (Connection con = ConnectionHandler.getConnection()) {
 		
@@ -94,6 +160,12 @@ public class Company {
 		}
 	}
 
+	/**
+	 * Validates the fields of the company.
+	 * @return Error message of the validation
+	 */
+	@NotNull
+	@CheckReturnValue
 	public List<String> validate() {
 		List<String> errors = new ArrayList<>();
 				
@@ -103,34 +175,34 @@ public class Company {
 	    	} else if (name.trim().length() > 20) {
 	    		errors.add("Firmenname zu lang (max. 20 Zeichen).");
 	    	} else if (!name.matches("([èéÈÉäöüÄÖÜßa-zA-Z\\s]+)")) {
-	    		errors.add("Ungültige Zeichen in der Firmennamen");
+	    		errors.add("Ung&uuml;ltige Zeichen im Firmennamen");
 	    	}
 	    }
 	    if (address != null) {
 	    	if (address.trim().isEmpty()) {
 	    		errors.add("Keine Adresse.");
 	    	} else if (!address.matches("[èéÈÉäöüÄÖÜß\\w\\s\\.\\-]+")) {
-	    		errors.add("Ungültige Adresse.");
+	    		errors.add("Ung&uuml;ltige Adresse.");
 	    	}
 	    }
 	    if (zip >= 1000 && zip <= 9999) {
 	    	if(!validatePlz(zip))
-	    		errors.add("Ungültige Postleitzahl.");
+	    		errors.add("Ung&uuml;ltige Postleitzahl.");
 	    } else {
-	    	errors.add("Ungültige Postleitzahl.");
+	    	errors.add("Ung&uuml;ltige Postleitzahl.");
         }
 	    if (town != null) { 
 	    	if (town.trim().isEmpty()) {
 	    		errors.add("Keine Stadt.");
 	    	} else if (!town.matches("[èéÈÉäöüÄÖÜßa-zA-Z\\-\\.\\s]+")) {
-	    		errors.add("Ungültige Stadt.");
+	    		errors.add("Ung&uuml;ltige Stadt.");
 	    	}
 	    }
 	    if (mail != null && !mail.trim().isEmpty()) {
 	        if (!mail.matches("(?:(?:\\r\\n)?[ \\t])*(?:(?:(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*|(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\<(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\>(?:(?:\\r\\n)?[ \\t])*)|(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*:(?:(?:\\r\\n)?[ \\t])*(?:(?:(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*|(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\<(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\>(?:(?:\\r\\n)?[ \\t])*)(?:,\\s*(?:(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*|(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\<(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\>(?:(?:\\r\\n)?[ \\t])*))*)?;\\s*)")) {
-	            errors.add("Ungültige Email-Adresse.");
+	            errors.add("Ung&uuml;ltige Email-Adresse.");
 	        } else if(!mxLookup(mail)) {
-	        	errors.add("Ungültige Email-Adresse.");
+	        	errors.add("Ung&uuml;ltige Email-Adresse.");
 	        }
 	    } else {
             errors.add("Keine Email-Adresse");
@@ -138,7 +210,15 @@ public class Company {
 		return errors;
 	}
 	
+	/**
+	 * Saves the company to the database.
+	 * @return reference to the company
+	 * @throws SQLException thrown on database errors
+	 */
+	@NotNull
 	public final Company save() throws SQLException {
+		
+		
 		String username = createUsername();
 		String password = createPassword();
 		String[] data = new String[] {username, password, name, address, Integer.toString(zip), town, mail};
@@ -153,13 +233,23 @@ public class Company {
 				stm.setString(6, town);
 				stm.setString(7, mail);
 				stm.execute();
-				sendLoginData(data);
+				MailService.sendRegistrationMail(data);
 				return this;
 			}
 		}
 	}
 	
-	public static final boolean changePassword(String username, String oldPassword, String newPassword) throws SQLException {
+	/**
+	 * Changes the password for the company 
+	 * if the credentials are correct.
+	 * @param username Username of the company
+	 * @param oldPassword old password of the company
+	 * @param newPassword new password of the company
+	 * @return true if password was changed
+	 * @throws SQLException thrown on database errors
+	 */
+	public static final boolean changePassword(@CheckForNull String username,
+			@CheckForNull String oldPassword, @CheckForNull String newPassword) throws SQLException {
 		if (username == null || oldPassword == null|| newPassword == null) return false;
 		
 		try (Connection con = ConnectionHandler.getConnection()) {
@@ -175,18 +265,20 @@ public class Company {
 		} 
 	}
 	
-	
-	private final void sendLoginData(String[] data) {
-		MailService.sendRegistrationMail(data);
-	}
-	
-	private static String hash(String s) {
+	/**
+	 * Gets the SHA-256 hash of a String.
+	 * @param s String to hash
+	 * @return hash of the String
+	 */
+	@NotNull
+	@CheckReturnValue
+	private static String hash(@NotNull String s) {
 		byte[] data = null;
 		try {
 			try {
 				data = MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8"));
 			} catch (NoSuchAlgorithmException e) {
-				data = s.getBytes("UTF-8");
+				throw new AssertionError("SHA-256 not installed");
 			}
 			return new String(data, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -195,7 +287,14 @@ public class Company {
 		}
 	}
 	
-	private static final boolean mxLookup(String mail) {
+	/**
+	 * Checks if a Mailserver is registered for the specified
+	 *  email adress.
+	 * @param mail email adress to check
+	 * @return true if mailserver is registered
+	 */
+	@CheckReturnValue
+	private static final boolean mxLookup(@NotNull String mail) {
 		String[] temp = mail.split("@");
 		String hostname = temp[1];
 		Hashtable<String, String> env = new Hashtable<String, String>();
@@ -216,6 +315,12 @@ public class Company {
 		}
 	}
 	
+	/**
+	 * Validates the zip code with the post.ch service.
+	 * @param zip zip to validate
+	 * @return true if correct code
+	 */
+	@CheckReturnValue
 	private static final boolean validatePlz(int zip) {
 		URL url;
 		HttpURLConnection conn;
@@ -245,7 +350,13 @@ public class Company {
 		return false;
 	}
 
-	public static final String validatePassword(String pw) {
+	/**
+	 * Validates the given password.
+	 * @param pw password
+	 * @return true if password is valid
+	 */
+	@CheckReturnValue
+	public static final String validatePassword(@CheckForNull String pw) {
 		String error = null;
 		if (pw != null) {
 			if (pw.trim().length() < 8) {
@@ -261,13 +372,24 @@ public class Company {
 		return error;
 	}
 	
+	/**
+	 * Generates a password with securerandom;
+	 * @return new password
+	 */
+	@CheckReturnValue
 	private static final String createPassword() {
 		SecureRandom random = new SecureRandom();
 	    return new BigInteger(130, random).toString(32);
 	}
 	
+	/**
+	 * Creates a new Username with the name of the company as a base.
+	 * @return new username
+	 * @throws SQLException thrown on database error
+	 */
+	@CheckReturnValue
 	private final String createUsername() throws SQLException {
-		String usernameBase = name.replace(" ", "");
+		String usernameBase = name != null ? name.replace(" ", "") : "";
 		int tries = 0;
 		
 		String newUsername;
@@ -287,6 +409,12 @@ public class Company {
 		}
 	}
 	
+	/**
+	 * Gets a FOrtuneCookie quote from the fullerdata.com webservice.
+	 * @return new Quote
+	 */
+	@CheckReturnValue
+	@NotNull
 	public static final String getFortuneQuote() {
 		URL url;
 		HttpURLConnection conn;
