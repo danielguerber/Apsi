@@ -17,6 +17,7 @@
 <form method="POST" action='/ApsiUebung2/RattleBits/Register' name="register">
 <ul class="error">
 <%
+	@SuppressWarnings("unchecked")
     List<String> messages = (List<String>)request.getAttribute("messages");
 	Iterator<String> it = messages.iterator();
     while (it.hasNext()) {
