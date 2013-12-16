@@ -5,8 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.annotation.CheckReturnValue;
-
-import com.sun.istack.internal.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Daniel Guerber & Stefan Eggenschwiler
@@ -22,7 +21,7 @@ public final class ConnectionHandler {
 	 * @throws SQLException thrown on database error
 	 */
 	@CheckReturnValue
-	@NotNull
+	@Nonnull
 	public static Connection getConnection() throws SQLException {
 	
 		try {

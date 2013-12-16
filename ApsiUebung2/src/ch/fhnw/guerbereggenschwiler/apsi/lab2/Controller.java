@@ -5,11 +5,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.sun.istack.internal.NotNull;
 
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Company;
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.model.Utils;
@@ -38,8 +37,8 @@ public final class Controller {
 	 * @throws ServletException thrown by RequestDispatcher
 	 * @throws IOException thrown by RequestDispatcher
 	 */
-	public static void indexPage(@NotNull HttpServletRequest request,
-			@NotNull HttpServletResponse response) throws  IOException, ServletException {
+	public static void indexPage(@Nonnull HttpServletRequest request,
+			@Nonnull HttpServletResponse response) throws  IOException, ServletException {
 		request.getRequestDispatcher(INDEX).forward(request, response);
 	}
 
@@ -50,8 +49,8 @@ public final class Controller {
 	 * @throws ServletException thrown by RequestDispatcher
 	 * @throws IOException thrown by RequestDispatcher
 	 */
-	public static void overviewPage(@NotNull HttpServletRequest request,
-			@NotNull HttpServletResponse response) throws ServletException, IOException {
+	public static void overviewPage(@Nonnull HttpServletRequest request,
+			@Nonnull HttpServletResponse response) throws ServletException, IOException {
 		if (request.getSession().getAttribute("username") == null) {
 			response.sendRedirect("Login");
 		} else {
@@ -69,8 +68,8 @@ public final class Controller {
 	 * @throws ServletException thrown by RequestDispatcher
 	 * @throws IOException thrown by RequestDispatcher
 	 */
-	public static void doChange(@NotNull HttpServletRequest request,
-			@NotNull HttpServletResponse response) throws ServletException, IOException {
+	public static void doChange(@Nonnull HttpServletRequest request,
+			@Nonnull HttpServletResponse response) throws ServletException, IOException {
 		if (request.getSession().getAttribute("username") == null) {
 			response.sendRedirect("Login");
 		} else {
@@ -109,8 +108,8 @@ public final class Controller {
 	 * @throws ServletException thrown by RequestDispatcher
 	 * @throws IOException thrown by RequestDispatcher
 	 */
-	public static void registerPage(@NotNull HttpServletRequest request,
-			@NotNull HttpServletResponse response) throws ServletException, IOException {
+	public static void registerPage(@Nonnull HttpServletRequest request,
+			@Nonnull HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("messages", messages);
 		request.setAttribute("firma", "");
@@ -128,8 +127,8 @@ public final class Controller {
 	 * @throws ServletException thrown by RequestDispatcher
 	 * @throws IOException thrown by RequestDispatcher
 	 */
-	public static void doRegister(@NotNull HttpServletRequest request,
-			@NotNull HttpServletResponse response) throws ServletException, IOException {
+	public static void doRegister(@Nonnull HttpServletRequest request,
+			@Nonnull HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("firma",  Utils.encodeHTML(request.getParameter("firma")));
 		request.setAttribute("address",  Utils.encodeHTML(request.getParameter("address")));
@@ -176,8 +175,8 @@ public final class Controller {
 	 * @throws ServletException thrown by RequestDispatcher
 	 * @throws IOException thrown by RequestDispatcher
 	 */
-	public static void loginPage(@NotNull HttpServletRequest request,
-			@NotNull HttpServletResponse response) throws ServletException, IOException {
+	public static void loginPage(@Nonnull HttpServletRequest request,
+			@Nonnull HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
 		request.setAttribute("messages", messages);
 		request.setAttribute("username", "");
@@ -191,8 +190,8 @@ public final class Controller {
 	 * @throws ServletException thrown by RequestDispatcher
 	 * @throws IOException thrown by RequestDispatcher
 	 */
-	public static void doLogin(@NotNull HttpServletRequest request,
-			@NotNull HttpServletResponse response) throws ServletException, IOException {
+	public static void doLogin(@Nonnull HttpServletRequest request,
+			@Nonnull HttpServletResponse response) throws ServletException, IOException {
 			
 			List<String> messages = new ArrayList<>();
 			try {

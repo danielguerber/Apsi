@@ -1,6 +1,6 @@
 package ch.fhnw.guerbereggenschwiler.apsi.lab2.model;
 
-import com.sun.istack.internal.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Daniel Guerber & Stefan Eggenschwiler
@@ -18,8 +18,8 @@ public final class Utils {
 	 * @param s String to encode
 	 * @return encoded string
 	 */
-	@NotNull
-	public static String encodeHTML(@NotNull String s)
+	@Nonnull
+	public static String encodeHTML(@Nonnull String s)
 	{
 	    StringBuffer out = new StringBuffer();
 	    for(int i=0; i<s.length(); i++)

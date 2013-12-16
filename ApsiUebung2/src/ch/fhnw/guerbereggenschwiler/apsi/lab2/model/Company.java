@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -27,8 +28,6 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import ch.fhnw.guerbereggenschwiler.apsi.lab2.mailservice.MailService;
-
-import com.sun.istack.internal.NotNull;
 
 /**
  * @author Daniel Guerber & Stefan Eggenschwiler
@@ -164,7 +163,7 @@ public class Company {
 	 * Validates the fields of the company.
 	 * @return Error message of the validation
 	 */
-	@NotNull
+	@Nonnull
 	@CheckReturnValue
 	public List<String> validate() {
 		List<String> errors = new ArrayList<>();
@@ -216,7 +215,7 @@ public class Company {
 	 * @return reference to the company
 	 * @throws SQLException thrown on database errors
 	 */
-	@NotNull
+	@Nonnull
 	public final Company save() throws SQLException {
 		
 		
@@ -271,9 +270,9 @@ public class Company {
 	 * @param s String to hash
 	 * @return hash of the String
 	 */
-	@NotNull
+	@Nonnull
 	@CheckReturnValue
-	private static String hash(@NotNull String s) {
+	private static String hash(@Nonnull String s) {
 		byte[] data = null;
 		try {
 			try {
@@ -295,7 +294,7 @@ public class Company {
 	 * @return true if mailserver is registered
 	 */
 	@CheckReturnValue
-	private static final boolean mxLookup(@NotNull String mail) {
+	private static final boolean mxLookup(@Nonnull String mail) {
 		String[] temp = mail.split("@");
 		String hostname = temp[1];
 		Hashtable<String, String> env = new Hashtable<String, String>();
@@ -415,7 +414,7 @@ public class Company {
 	 * @return new Quote
 	 */
 	@CheckReturnValue
-	@NotNull
+	@Nonnull
 	public static final String getFortuneQuote() {
 		URL url;
 		HttpURLConnection conn;

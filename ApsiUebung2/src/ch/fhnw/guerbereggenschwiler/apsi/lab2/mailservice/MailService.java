@@ -2,6 +2,7 @@
 
 import java.util.Properties;
 
+import javax.annotation.Nonnull;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -9,8 +10,6 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import com.sun.istack.internal.NotNull;
  
 /**
  * @author Daniel Guerber & Stefan Eggenschwiler
@@ -30,7 +29,7 @@ public final class MailService {
 	 * Sends the mail after registration.
 	 * @param data {Username, Password, Name, Address, ZipCode, City, E-Mail}
 	 */
-	public static void sendRegistrationMail(@NotNull String[] data) {
+	public static void sendRegistrationMail(@Nonnull String[] data) {
 		if(data.length < 7)
 			throw new InternalError("Data field to small!");
 		Properties props = new Properties();
