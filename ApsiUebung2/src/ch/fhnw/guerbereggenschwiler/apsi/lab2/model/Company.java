@@ -142,7 +142,7 @@ public class Company {
 		
 			try (PreparedStatement stm = con.prepareStatement("SELECT  `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? ")) {
 				stm.setString(1, user);
-				stm.setString(2, hash(password));
+				stm.setString(2, hash(user, password));
 				try (ResultSet rs = stm.executeQuery()) {
 					if (rs.next()) {
 						return new Company(
@@ -226,7 +226,7 @@ public class Company {
 		try (Connection con = ConnectionHandler.getConnection()) {
 			try (PreparedStatement stm = con.prepareStatement("INSERT INTO `company`(`username`, `password`, `name`, `address`, `zip`, `town`, `mail`) VALUES (?,?,?,?,?,?,?)")) {
 				stm.setString(1, username);
-				stm.setString(2, hash(password));
+				stm.setString(2, hash(username, password));
 				stm.setString(3, name);
 				stm.setString(4, address);
 				stm.setInt(5, zip);
@@ -255,9 +255,9 @@ public class Company {
 		try (Connection con = ConnectionHandler.getConnection()) {
 			try (PreparedStatement stm = con.prepareStatement("UPDATE `company` SET `password`= ? WHERE `username`= ? AND `password` = ?")) {
 			
-				stm.setString(1, hash(newPassword));
+				stm.setString(1, hash(username, newPassword));
 				stm.setString(2, username);
-				stm.setString(3, hash(oldPassword));
+				stm.setString(3, hash(username, oldPassword));
 				
 				stm.execute();
 				return stm.getUpdateCount() > 0;
@@ -267,13 +267,15 @@ public class Company {
 	
 	/**
 	 * Gets the SHA-256 hash of a String.
-	 * @param s String to hash
+	 * @param username
+	 * @param password String to hash
 	 * @return hash of the String
 	 */
 	@Nonnull
 	@CheckReturnValue
-	private static String hash(@Nonnull String s) {
+	private static String hash(@Nonnull String username, @Nonnull String password) {
 		byte[] data = null;
+		String s = username + password;
 		try {
 			try {
 				data = MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8"));
