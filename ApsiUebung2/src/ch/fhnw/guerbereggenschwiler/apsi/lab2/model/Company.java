@@ -412,7 +412,7 @@ public class Company {
 	}
 	
 	/**
-	 * Gets a FOrtuneCookie quote from the fullerdata.com webservice.
+	 * Gets a FortuneCookie quote from the fullerdata.com webservice.
 	 * @return new Quote
 	 */
 	@CheckReturnValue
