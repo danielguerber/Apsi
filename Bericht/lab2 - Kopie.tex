@@ -229,7 +229,7 @@ Die Model-Klassen enthalten alle Logik, um das Datenmodel auszulesen, zu validie
 \subsubsection{Comapny}
 Die Klasse Company hat zwei Anwendungen:
 Einerseits kann sie mit Feldwerten instanziert werden und diese Werte mit Instanzmethoden zu Validieren und in die Datenbank zu speichern, alle Felder sind final.
-Andererseits bietet die Klasse auch statische Methoden um Daten zu laden, zu validierenund zu ändern, diese werden verwendet um dem Login durchzuführen, das Passwort zu ändern oder um ein Zitat zu laden.
+Andererseits bietet die Klasse auch statische Methoden um Daten zu laden, zu validieren und zu ändern, diese werden verwendet um dem Login durchzuführen, das Passwort zu ändern oder um ein Zitat zu laden.
 \subsubsection{ConnectionHandler}
 Diese Klasse kann nicht instanziert werden, sie enthält eine statische Methode um eine Verbindung auf die Datenbank zu erhalten.
 \subsubsection{Utils}
@@ -288,8 +288,11 @@ Um Cross-site Scripting zu verhindern werden in den JSP-Files nur dynamische Inh
 Damit keine internen Informationen über die Implementierung nach aussen dringen, wurden im web.xml zwei Seiten definiert, welche bei Fehlern angezeigt werden. 404.jsp wird dem User angezeigt, wenn unter der eingegebenen URL keine Ressource registriert ist, bei allen anderen Fehlern wird error.jsp angezeigt.
 \lstinputlisting[caption=Error Handling,style=XMLStyle]{error.xml}
 \subsection{Passwortspeicherung}
-
-
+Damit bei unerlaubtem Zugriff auf die Datenbank nicht die Userpasswörter ausgelesen werden können wird ein SHA-256 wert berechnet und in der Datenbank gespeichert. Damit dieser Hash nicht einfach mit einer tabelle verglichen und somit zum Passwort zurückgerechnet werden kann, wird der username vorangestellt und mit dem Passwort gehasht, da die Applikation keine änderung des Usernamens zulässt, ist dies nicht so problematisch.
 \section{SSL}
-
+Für die Verschlüsselung der Applikation mit SSL wurde die SSL Funktionalität von Tomcat verwendet.
+In einem ersten Schritt wurde mit dem keytool von Java ein keystore mit einem 2048 bit RSA Schlüssel generiert. Dieser keystore wurde über das server.xml im Tomcat eingebunden, so dass SSL-Verbindungen auf den Tomcat Server möglich sind.
+\lstinputlisting[caption=server.xml Auszug,style=XMLStyle]{server.xml}
+Danach wurde im web.xml definiert, dass die URL-Patterns /Login und /Overview nur über SSL aufgerufen werden sollen, so dass automatisch umgeschalten wird.
+\lstinputlisting[caption=web.xml Auszug,style=XMLStyle]{web.xml}
 \end{document}

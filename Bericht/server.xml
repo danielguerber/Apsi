@@ -1,0 +1,3 @@
+<Connector port="8443" maxThreads="150" scheme="https" secure="true" SSLEnabled="true" 
+    keystoreFile="conf/RattleBitsKeyStore" keystorePass="apsilab" clientAuth="false" 
+    keyAlias="RattleBits" sslProtocol="TLS"/>
