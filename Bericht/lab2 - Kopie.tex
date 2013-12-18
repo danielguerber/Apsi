@@ -205,6 +205,7 @@ Application Security
  \vspace{0.5cm}
 \hrulefill
 \end{abstract}
+\newpage
 
  \pagestyle{documentstyle}
  \tableofcontents
@@ -222,6 +223,7 @@ Die Servlets reagieren jeweils auf ein URL-Pattern und leiten die Anfragen zu de
 \item OverviewServlet: Leitet GET- und POST-Anfragen auf /Overview auf den Controller weiter um die Übersichts Seite anzuzeigen bzw. die Passwortänderungs Anfrage zu bearbeiten.
 \item OverviewServlet: Leitet GET- und POST-Anfragen auf /Register auf den Controller weiter um die Registrierungs Seite anzuzeigen bzw. die Registrierungs Anfrage zu bearbeiten.
 \end{itemize}
+\newpage
 \subsection{Controller}
 Die Controller-Klasse kann nicht instanziert werden, da der Konstruktor auf private gesetzt ist, sie bietet statische Methoden an, um eingehende HttpServletRequests zu behandeln. Die einzelnen Methoden analysieren  und validieren den Request, rufen entsprechende Methoden auf dem Model auf um Daten zu laden oder zu ändern und zeigen als HttpServletResponse JSP-Pages als View an oder leiten den Benutzer auf eine andere URL um.
 \subsection{Model}
@@ -258,8 +260,10 @@ Gross- und Klein-Buchstaben, Zahlen, Punkt, Bindestrich, Leerzeichen.
 
 \subsection{Postleitzahl}
 Nur Zahlen, richtige PLZ für die Schweiz, nachkontrolliert mit einem Web-Dienst wie z. B.: http://www.postleitzahlen.ch.
-\lstinputlisting[caption=Validierung PLZ,style=JavaStyle]{zip.java}
-
+\lstinputlisting[caption=Validierung PLZ 1,style=JavaStyle]{zip.java}
+\lstinputlisting[caption=Validierung PLZ 2,style=JavaStyle]{zipvalidation.java}
+Die Validierung der Postleitzahl führen wir, wie im Code erkennbar, über die Seite der Schweizerischen Post (post.ch) durch. Wir senden einen HTML-Request und parsen das erhaltene XML-Ergebnis. Wir bestimmen dadurch lediglich, ob die angegebene Postleitzahl in der Schweiz existiert oder nicht. Ob diese zur angegebenen Stadt gehört, testen wir nicht.
+\newpage
 \subsection{Stadt}
 Erlaubte Zeichen: Gross- und Klein-Buchstaben, Punkt, Bindestrich, Leerzeichen.
 \lstinputlisting[caption=Validierung Stadt,style=JavaStyle]{town.java}
@@ -268,19 +272,31 @@ Erlaubte Zeichen: Gross- und Klein-Buchstaben, Punkt, Bindestrich, Leerzeichen.
 Sie senden aber erst, wenn Sie sicher sind, dass die
 Email-Adresse auch existiert (no bouncing).
 \lstinputlisting[caption=Validierung E-Mail,style=JavaStyle]{mail.java}
+Die Regex-Validierung der E-Mail Adresse führen wir mit dem internationalen Standard der IETF, RFC-822, durch. Weitere Informationen und eine genaue Beschreibung des Standards können unter folgendem Link gefunden werden:\\
+http://www.ietf.org/rfc/rfc0822.txt
 
+\newpage
+\lstinputlisting[caption=Validierung Mail-Server,style=JavaStyle]{mxlookup.java}
+Nach einigem Rechercheaufwand haben wir festgestellt, dass es keine Möglichkeit gibt sicher festzustellen, ob eine angegebene E-Mail Adresse wirklich existiert oder nicht. Auch kann es trotz einer existierendem Konto auf dem Mail-Server immernoch zu Bouncing kommen. Wenn beispielsweise das Postfach voll ist, der Benutzer eine "Out of Office"-Message gesetzt hat oder das Konto aus irgendeinem Grund inaktiv sein sollte.\\\\Deshalb haben wir uns nach einigen Überlegungen dazu entschieden, lediglich abzufragen, ob der Mail-Server, den der Benutzer in seiner E-Mail-Adresse angibt, existiert oder nicht. Diesen Check machen wir über eine MxLookup-Methode.
+
+\newpage
 \subsection{Benutzername}
 min. 4 Zeichen, max. 64 Zeichen; Erlaubte Zeichen:
-Zahlen, Gross- und Klein-Buchstaben mit Umlauten, Punkte, Bindestriche, Unterstriche.
+Zahlen, Gross- und Klein-Buchstaben mit Umlauten, Punkte, Bindestriche, Unterstriche. \\\\
+Eine Validierung des Benutzernamens müssen wir nicht durchführen, da dieser nicht manuell vom Benutzer geändert werden kann. Der Benutzername wird über den Firmennamen generiert. Falls bereits eine Firma mit diesem Namen bestehen sollte, wird eine 1 usw. an den Namen gehängt.
+\lstinputlisting[caption=Generierung Benutzername,style=JavaStyle]{username.java}
 
+\newpage
 \subsection{Passwort}
 min. 8 Zeichen, max. 64 Zeichen; Erlaubte Zeichen: Zahlen, Gross- und Klein-Buchstaben mit Umlauten, Punkten, Bindestrichen, Unterstrichen.
 \lstinputlisting[caption=Validierung Passwort,style=JavaStyle]{password.java}
 
+\newpage
 \section{Sicherheit}
 \subsection{SQL-Injection}
 Die Validierung der Werte vor dem ausführen der Speicher-Funktion sollte schon verhindern, dass gefährliche Zeichen in den Feldwerten vorhanden sind. Trotz dieser Absicherung werden die SQL-Statements fest mit Platzhaltern als PreparedStatement definiert und die Feldwerte werden darüber gesetzt, wodurch sie nur als Daten und nicht als Befehle interpretiert werden können.
 \lstinputlisting[caption=PreparedStatement,style=JavaStyle]{sql.java}
+\newpage
 \subsection{Cross-site Scripting}
 Um Cross-site Scripting zu verhindern werden in den JSP-Files nur dynamische Inhalte dargestellt, welche vom Controller gesetzt wurden und keine Daten aus den Request-Parameter. Der Controller ruft für alle Ausgaben, welche nicht fest im Programm definiert sind, an die JSP-Files zuerst die Funktion encodeHtml auf, welche alle potentiell gefährlichen Zeichen durch Html-Platzhalter ersetzt.
 \lstinputlisting[caption=encodeHtml,style=JavaStyle]{encodeHtml.java}
