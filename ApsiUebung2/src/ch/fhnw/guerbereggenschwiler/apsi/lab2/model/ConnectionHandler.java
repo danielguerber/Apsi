@@ -31,6 +31,6 @@ public final class ConnectionHandler {
 			throw new AssertionError("MySql driver not installed!");
 		}
 		
-		return DriverManager.getConnection("jdbc:mysql://localhost/apsi_lab?user=root");
+		return DriverManager.getConnection("jdbc:mysql://localhost/apsi_lab?user=apsilab02");
 	}
 }
