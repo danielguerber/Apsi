@@ -1,0 +1,28 @@
+\select@language {german}
+\contentsline {section}{\numberline {1}Aufgabenstellung}{3}
+\contentsline {section}{\numberline {2}Softwareaufbau}{3}
+\contentsline {subsection}{\numberline {2.1}Servlets}{3}
+\contentsline {subsection}{\numberline {2.2}Controller}{3}
+\contentsline {subsection}{\numberline {2.3}Model}{4}
+\contentsline {subsubsection}{\numberline {2.3.1}Comapny}{4}
+\contentsline {subsubsection}{\numberline {2.3.2}ConnectionHandler}{4}
+\contentsline {subsubsection}{\numberline {2.3.3}Utils}{4}
+\contentsline {subsection}{\numberline {2.4}JSP-Files}{4}
+\contentsline {subsection}{\numberline {2.5}MailService}{4}
+\contentsline {section}{\numberline {3}Datenbank}{5}
+\contentsline {subsection}{\numberline {3.1}Aufbau}{5}
+\contentsline {subsection}{\numberline {3.2}Sicherheit}{5}
+\contentsline {section}{\numberline {4}Validierung}{5}
+\contentsline {subsection}{\numberline {4.1}Firmenname}{5}
+\contentsline {subsection}{\numberline {4.2}Strasse \& Strassennummer}{6}
+\contentsline {subsection}{\numberline {4.3}Postleitzahl}{6}
+\contentsline {subsection}{\numberline {4.4}Stadt}{6}
+\contentsline {subsection}{\numberline {4.5}E-Mail Adresse}{7}
+\contentsline {subsection}{\numberline {4.6}Benutzername}{7}
+\contentsline {subsection}{\numberline {4.7}Passwort}{7}
+\contentsline {section}{\numberline {5}Sicherheit}{8}
+\contentsline {subsection}{\numberline {5.1}SQL-Injection}{8}
+\contentsline {subsection}{\numberline {5.2}Cross-site Scripting}{9}
+\contentsline {subsection}{\numberline {5.3}Error Handling}{9}
+\contentsline {subsection}{\numberline {5.4}Passwortspeicherung}{10}
+\contentsline {section}{\numberline {6}SSL}{10}

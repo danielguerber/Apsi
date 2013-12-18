@@ -1,0 +1,7 @@
+<error-page>
+ <error-code>404</error-code>
+    <location>/RattleBits/404.jsp</location>
+</error-page> 
+<error-page>
+    <location>/RattleBits/error.jsp</location>
+</error-page>
